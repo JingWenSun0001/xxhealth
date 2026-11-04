@@ -21,21 +21,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.2.2</version>
-        </dependency>
+        <!-- MyBatis-Plus 的 starter 已包含 mybatis-spring-boot-starter，
+             多余的 mybatis-spring-boot-starter(2.2.2) 会锁定 mybatis 3.5.9，
+             与 MyBatis-Plus 3.5.5 需要的 mybatis 3.5.15+ 冲突，故移除 -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
+        <!-- MySQL 8 默认使用 caching_sha2_password，5.1.x 驱动无法认证，升级到 8.0.x -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.49</version>
+            <version>8.0.33</version>
         </dependency>
 
         <dependency>
@@ -67,7 +66,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>1.18.46</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -77,6 +76,21 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- JDK 23+ 默认不再隐式启用 classpath 上的注解处理器，显式声明 Lombok，
+                 避免出现 "找不到 getXxx()/setXxx()" 或 lombok 初始化异常 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.46</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>
