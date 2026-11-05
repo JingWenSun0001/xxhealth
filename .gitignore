@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Frontend ###
+xxhealth-fronted/node_modules/
+xxhealth-fronted/dist/

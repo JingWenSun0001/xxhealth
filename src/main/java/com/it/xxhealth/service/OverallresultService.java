@@ -2,6 +2,7 @@ package com.it.xxhealth.service;
 
 import com.it.xxhealth.entity.Overallresult;
 import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 
 /**
 * @author Ljz
@@ -10,4 +11,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface OverallresultService extends IService<Overallresult> {
 
+    List<Overallresult> listOverallResultByOrderId(Integer orderid);
+
+    int saveOverallResult(Overallresult overallresult);
+
+    int updateOverallResult(Overallresult overallresult);
+
+    int removeOverallResult(Integer orid);
 }

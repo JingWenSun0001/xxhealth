@@ -2,6 +2,7 @@ package com.it.xxhealth.service;
 
 import com.it.xxhealth.entity.Setmeal;
 import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 
 /**
 * @author Ljz
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SetmealService extends IService<Setmeal> {
 
+    List<Setmeal> listSetmeal();
 }

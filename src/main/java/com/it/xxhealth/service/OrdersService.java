@@ -2,6 +2,8 @@ package com.it.xxhealth.service;
 
 import com.it.xxhealth.entity.Orders;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.it.xxhealth.dto.OrdersPageRequestDto;
+import com.it.xxhealth.dto.OrdersPageResponseDto;
 
 /**
 * @author Ljz
@@ -10,4 +12,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface OrdersService extends IService<Orders> {
 
+    OrdersPageResponseDto listOrders(OrdersPageRequestDto request);
+
+    Orders getOrdersById(Integer orderid);
+
+    int updateOrdersState(Integer orderid, Integer state);
 }
