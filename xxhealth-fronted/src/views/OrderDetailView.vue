@@ -45,6 +45,81 @@
       </div>
     </section>
 
+    <section class="content-card report-items-card">
+      <div class="section-heading">
+        <div>
+          <h3>检查项目</h3>
+          <span>共 {{ reportItems.length }} 个检查项，{{ reportDetailCount }} 条检查明细</span>
+        </div>
+        <el-button
+          type="primary"
+          :loading="reportSaving"
+          :disabled="!reportItems.length || order?.state === 2"
+          @click="saveReportItems()"
+        >保存检查结果</el-button>
+      </div>
+
+      <div v-if="reportItems.length" class="report-groups">
+        <article v-for="report in reportItems" :key="report.cirid" class="report-group">
+          <div class="report-group-heading">
+            <div>
+              <span class="report-group-index">{{ report.ciid }}</span>
+              <h4>{{ report.ciname }}</h4>
+            </div>
+            <span>{{ report.cidetailedreports?.length || 0 }} 项</span>
+          </div>
+
+          <div class="report-detail-list">
+            <div
+              v-for="detail in report.cidetailedreports"
+              :key="detail.cidrid"
+              class="report-detail-row"
+            >
+              <div class="detail-name">
+                <strong>{{ detail.name }}</strong>
+                <small>{{ detailTypeLabel(detail.type) }}</small>
+              </div>
+              <div class="detail-reference">
+                <small>参考值</small>
+                <span>{{ formatReference(detail) }}</span>
+              </div>
+              <el-input
+                v-model="detail.value"
+                :type="detail.type === 4 ? 'textarea' : 'text'"
+                :autosize="detail.type === 4 ? { minRows: 1, maxRows: 3 } : false"
+                :disabled="order?.state === 2"
+                :placeholder="detail.type === 1 ? '请输入数值' : '请输入检查结果'"
+                maxlength="100"
+                @input="handleDetailValue(detail)"
+              >
+                <template v-if="detail.unit && detail.type !== 4" #append>{{ detail.unit }}</template>
+              </el-input>
+              <div class="detail-status">
+                <template v-if="detail.type === 1 || detail.type === 2">
+                  <el-tag :type="detail.iserror === 1 ? 'danger' : 'success'" effect="light">
+                    {{ detail.iserror === 1 ? '异常' : '正常' }}
+                  </el-tag>
+                </template>
+                <template v-else>
+                  <el-switch
+                    v-model="detail.iserror"
+                    :active-value="1"
+                    :inactive-value="0"
+                    active-text="异常"
+                    inactive-text="正常"
+                    inline-prompt
+                    :disabled="order?.state === 2"
+                    @change="reportDirty = true"
+                  />
+                </template>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <el-empty v-else description="该套餐暂未配置检查项目" />
+    </section>
+
     <section class="report-workspace">
       <aside class="report-aside">
         <div class="aside-heading">
@@ -144,7 +219,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -162,6 +237,7 @@ import {
   Tickets
 } from '@element-plus/icons-vue'
 import { getOrdersById, updateOrdersState } from '../api/orders'
+import { createReportTemplate, listCiReport, updateCiDetailedReport } from '../api/ciReport'
 import {
   listOverallResultByOrderId,
   removeOverallResult,
@@ -176,6 +252,9 @@ const loading = ref(false)
 const stateUpdating = ref(false)
 const order = ref(null)
 const results = ref([])
+const reportItems = ref([])
+const reportSaving = ref(false)
+const reportDirty = ref(false)
 const selectedResultId = ref(null)
 const formRef = ref()
 const dialog = reactive({
@@ -184,6 +263,10 @@ const dialog = reactive({
   form: { orid: null, orderid: orderId, title: '', content: '' }
 })
 const rules = { title: [{ required: true, message: '请输入结论标题', trigger: 'blur' }] }
+const reportDetailCount = computed(() => reportItems.value.reduce(
+  (count, report) => count + (report.cidetailedreports?.length || 0),
+  0
+))
 
 async function loadDetail() {
   loading.value = true
@@ -195,10 +278,84 @@ async function loadDetail() {
     order.value = orderData
     results.value = resultData || []
     selectedResultId.value = results.value[0]?.orid || null
+    await loadReportItems()
   } catch (error) {
     ElMessage.error(error.message)
   } finally {
     loading.value = false
+  }
+}
+
+async function loadReportItems() {
+  let items = (await listCiReport(orderId)) || []
+  if (!items.length && order.value?.state === 1) {
+    await createReportTemplate(orderId)
+    items = (await listCiReport(orderId)) || []
+  }
+  reportItems.value = items.map(report => ({
+    ...report,
+    cidetailedreports: (report.cidetailedreports || []).map(detail => ({
+      ...detail,
+      value: detail.value ?? '',
+      iserror: detail.iserror ?? 0
+    }))
+  }))
+  reportDirty.value = false
+}
+
+function detailTypeLabel(type) {
+  return ({ 1: '数值范围', 2: '标准值', 3: '无需自动判断', 4: '描述', 5: '其他' })[type] || '检查结果'
+}
+
+function formatReference(detail) {
+  if (detail.type === 1) {
+    const min = detail.minrange ?? '-'
+    const max = detail.maxrange ?? '-'
+    return `${min} ～ ${max}${detail.unit ? ` ${detail.unit}` : ''}`
+  }
+  return detail.normalvaluestring || detail.normalvalue || '无固定参考值'
+}
+
+function handleDetailValue(detail) {
+  const value = String(detail.value ?? '').trim()
+  if (!value) {
+    detail.iserror = 0
+  } else if (detail.type === 1) {
+    const numberValue = Number(value)
+    const belowMin = detail.minrange != null && numberValue < Number(detail.minrange)
+    const aboveMax = detail.maxrange != null && numberValue > Number(detail.maxrange)
+    detail.iserror = !Number.isFinite(numberValue) || belowMin || aboveMax ? 1 : 0
+  } else if (detail.type === 2 && detail.normalvalue != null) {
+    detail.iserror = value === String(detail.normalvalue).trim() ? 0 : 1
+  }
+  reportDirty.value = true
+}
+
+function allReportDetails() {
+  return reportItems.value.flatMap(report => report.cidetailedreports || [])
+}
+
+async function saveReportItems(showSuccess = true) {
+  if (order.value?.state === 2) return
+  const details = allReportDetails()
+  if (!details.length) {
+    ElMessage.warning('当前没有可保存的检查明细')
+    return
+  }
+  reportSaving.value = true
+  try {
+    await updateCiDetailedReport(details.map(detail => ({
+      cidrid: detail.cidrid,
+      value: String(detail.value ?? ''),
+      iserror: detail.iserror ?? 0
+    })))
+    reportDirty.value = false
+    if (showSuccess) ElMessage.success('检查结果已保存')
+  } catch (error) {
+    if (showSuccess) ElMessage.error(error.message)
+    throw error
+  } finally {
+    reportSaving.value = false
   }
 }
 
@@ -241,9 +398,22 @@ async function removeItem(item) {
 async function toggleArchive() {
   const nextState = order.value.state === 1 ? 2 : 1
   const actionText = nextState === 2 ? '归档后页面将进入只读状态' : '恢复后可继续编辑报告'
+  if (nextState === 2) {
+    const details = allReportDetails()
+    if (!details.length) {
+      ElMessage.warning('当前没有检查明细，无法归档')
+      return
+    }
+    const unfinished = details.find(detail => !String(detail.value ?? '').trim())
+    if (unfinished) {
+      ElMessage.warning(`请先填写“${unfinished.name}”的检查结果`)
+      return
+    }
+  }
   try {
     await ElMessageBox.confirm(actionText, nextState === 2 ? '确认归档' : '确认恢复', { type: 'warning' })
     stateUpdating.value = true
+    if (nextState === 2 && reportDirty.value) await saveReportItems(false)
     await updateOrdersState(orderId, nextState)
     order.value.state = nextState
     ElMessage.success(nextState === 2 ? '报告已归档' : '报告已恢复为未归档')
@@ -259,5 +429,12 @@ function maskPhone(phone) {
   return `${phone.slice(0, 3)}****${phone.slice(-4)}`
 }
 
-onMounted(loadDetail)
+onMounted(() => {
+  if (!Number.isInteger(orderId) || orderId <= 0) {
+    ElMessage.error('无效的预约编号')
+    router.replace('/orders')
+    return
+  }
+  loadDetail()
+})
 </script>

@@ -33,7 +33,7 @@
           <h2>体检报告管理</h2>
           <p>查询预约订单并维护医生总检结论</p>
         </div>
-        <span class="scope-badge">仅订单 / 套餐 / 总检结论</span>
+        <span class="scope-badge">订单 / 检查项 / 总检结论</span>
       </div>
 
       <el-form :model="filters" @submit.prevent="search">

@@ -9,9 +9,9 @@ module.exports = defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: process.env.VUE_APP_PROXY_TARGET || 'http://localhost:8088',
         changeOrigin: true,
-        pathRewrite: { '^/api': '' }
+        pathRewrite: { '^/api': '/tijiancms' }
       }
     }
   }
