@@ -1,6 +1,47 @@
-import { formatRange, detectError } from '@/common'
+// 参考范围展示，如 90-140/60-90 或 4.0 ~ 10.0
+export function formatRange(detail) {
+  if (!detail) return '—'
+  if (detail.normalvaluestring) return detail.normalvaluestring
+  if (detail.minrange !== null && detail.minrange !== undefined &&
+      detail.maxrange !== null && detail.maxrange !== undefined) {
+    return `${detail.minrange} ~ ${detail.maxrange}`
+  }
+  if (detail.normalvalue) return detail.normalvalue
+  return '—'
+}
 
-export { formatRange, detectError }
+/**
+ * 根据检查项明细的类型与参考范围判断结果是否异常
+ * type: 1 数值范围型 2 数值相等型 3 无需验证型 4 描述型 5 其它
+ * @returns {number} 1 异常 / 0 正常
+ */
+export function detectError(detail, value) {
+  if (!detail) return 0
+  const type = detail.type
+  const text = value === null || value === undefined ? '' : String(value).trim()
+
+  if (type === 1) {
+    if (text === '') return 0
+    const num = Number(text)
+    if (Number.isNaN(num)) return 0
+    if (detail.minrange !== null && detail.minrange !== undefined && num < Number(detail.minrange)) {
+      return 1
+    }
+    if (detail.maxrange !== null && detail.maxrange !== undefined && num > Number(detail.maxrange)) {
+      return 1
+    }
+    return 0
+  }
+
+  if (type === 2) {
+    if (text === '') return 0
+    return detail.normalvalue !== null && detail.normalvalue !== undefined &&
+      text !== String(detail.normalvalue).trim() ? 1 : 0
+  }
+
+  // 无需验证 / 描述型 / 其它
+  return 0
+}
 
 // 是否有录入结果
 export function hasValue(detail) {
