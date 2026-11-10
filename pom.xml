@@ -24,7 +24,6 @@
         <!-- MyBatis-Plus 的 starter 已包含 mybatis-spring-boot-starter，
              多余的 mybatis-spring-boot-starter(2.2.2) 会锁定 mybatis 3.5.9，
              与 MyBatis-Plus 3.5.5 需要的 mybatis 3.5.15+ 冲突，故移除 -->
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

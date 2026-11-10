@@ -2,7 +2,9 @@ package com.it.xxhealth.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import lombok.Data;
 
@@ -22,6 +24,7 @@ public class Orders {
     /**
      * 预约日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date orderdate;
 
     /**
@@ -43,6 +46,19 @@ public class Orders {
      * 订单状态 (1:未归档; 2:已归档)
      */
     private Integer state;
+
+    /**
+     * 医生端订单列表和详情需要展示的关联信息。
+     * 这些字段由 OrdersMapper 的联表查询填充，不参与 orders 表写入。
+     */
+    @TableField(exist = false)
+    private Users users;
+
+    @TableField(exist = false)
+    private Hospital hospital;
+
+    @TableField(exist = false)
+    private Setmeal setmeal;
 
     @Override
     public boolean equals(Object that) {

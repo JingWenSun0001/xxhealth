@@ -8,9 +8,15 @@ spring:
     name: xxhealth
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/health_check_system?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
-    username: root
-    password: 123456
+    url: ${XXHEALTH_DB_URL:jdbc:mysql://localhost:3306/health_check_system?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true}
+    username: ${XXHEALTH_DB_USERNAME:root}
+    password: ${XXHEALTH_DB_PASSWORD:123456}
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd
+  sql:
+    init:
+      encoding: UTF-8
 
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml

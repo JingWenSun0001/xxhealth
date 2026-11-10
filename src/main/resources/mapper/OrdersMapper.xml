@@ -4,16 +4,105 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.it.xxhealth.mapper.OrdersMapper">
 
-    <resultMap id="BaseResultMap" type="com.it.xxhealth.entity.Orders">
-            <id property="orderid" column="orderId" />
-            <result property="orderdate" column="orderDate" />
-            <result property="userid" column="userId" />
-            <result property="hpid" column="hpId" />
-            <result property="smid" column="smId" />
-            <result property="state" column="state" />
+    <resultMap id="OrdersWithDetailsResultMap" type="com.it.xxhealth.entity.Orders">
+        <id property="orderid" column="o_orderId"/>
+        <result property="orderdate" column="o_orderDate"/>
+        <result property="userid" column="o_userId"/>
+        <result property="hpid" column="o_hpId"/>
+        <result property="smid" column="o_smId"/>
+        <result property="state" column="o_state"/>
+        <association property="users" javaType="com.it.xxhealth.entity.Users">
+            <id property="userid" column="u_userId"/>
+            <result property="realname" column="u_realName"/>
+            <result property="sex" column="u_sex"/>
+            <result property="identitycard" column="u_identityCard"/>
+            <result property="birthday" column="u_birthday"/>
+            <result property="usertype" column="u_userType"/>
+        </association>
+        <association property="hospital" javaType="com.it.xxhealth.entity.Hospital">
+            <id property="hpid" column="h_hpId"/>
+            <result property="name" column="h_name"/>
+            <result property="telephone" column="h_telephone"/>
+            <result property="address" column="h_address"/>
+        </association>
+        <association property="setmeal" javaType="com.it.xxhealth.entity.Setmeal">
+            <id property="smid" column="s_smId"/>
+            <result property="name" column="s_name"/>
+            <result property="type" column="s_type"/>
+            <result property="price" column="s_price"/>
+        </association>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        orderId,orderDate,userId,hpId,smId,state
+    <sql id="Orders_With_Details_Columns">
+        o.orderId AS o_orderId,
+        o.orderDate AS o_orderDate,
+        o.userId AS o_userId,
+        o.hpId AS o_hpId,
+        o.smId AS o_smId,
+        o.state AS o_state,
+        u.userId AS u_userId,
+        u.realName AS u_realName,
+        u.sex AS u_sex,
+        u.identityCard AS u_identityCard,
+        u.birthday AS u_birthday,
+        u.userType AS u_userType,
+        h.hpId AS h_hpId,
+        h.name AS h_name,
+        h.telephone AS h_telephone,
+        h.address AS h_address,
+        s.smId AS s_smId,
+        s.name AS s_name,
+        s.type AS s_type,
+        s.price AS s_price
     </sql>
+
+    <sql id="Orders_With_Details_From">
+        FROM orders o
+        INNER JOIN users u ON u.userId = o.userId
+        INNER JOIN hospital h ON h.hpId = o.hpId
+        INNER JOIN setmeal s ON s.smId = o.smId
+    </sql>
+
+    <select id="selectOrdersPage" resultMap="OrdersWithDetailsResultMap">
+        SELECT
+        <include refid="Orders_With_Details_Columns"/>
+        <include refid="Orders_With_Details_From"/>
+        <where>
+            <if test="request.orderid != null">
+                AND o.orderId = #{request.orderid}
+            </if>
+            <if test="request.userid != null and request.userid != ''">
+                AND o.userId LIKE CONCAT('%', #{request.userid}, '%')
+            </if>
+            <if test="request.realname != null and request.realname != ''">
+                AND u.realName LIKE CONCAT('%', #{request.realname}, '%')
+            </if>
+            <if test="request.sex != null">
+                AND u.sex = #{request.sex}
+            </if>
+            <if test="request.hpid != null">
+                AND o.hpId = #{request.hpid}
+            </if>
+            <if test="request.smid != null">
+                AND o.smId = #{request.smid}
+            </if>
+            <if test="request.state != null">
+                AND o.state = #{request.state}
+            </if>
+            <if test="request.startDate != null">
+                AND o.orderDate &gt;= #{request.startDate}
+            </if>
+            <if test="request.endDate != null">
+                AND o.orderDate &lt;= #{request.endDate}
+            </if>
+        </where>
+        ORDER BY o.orderDate DESC, o.orderId DESC
+    </select>
+
+    <select id="selectOrdersById" resultMap="OrdersWithDetailsResultMap">
+        SELECT
+        <include refid="Orders_With_Details_Columns"/>
+        <include refid="Orders_With_Details_From"/>
+        WHERE o.orderId = #{orderid}
+    </select>
 </mapper>

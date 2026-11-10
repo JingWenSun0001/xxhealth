@@ -1,79 +1,51 @@
 package com.it.xxhealth.controller;
 
-import com.it.xxhealth.dto.OrdersDto;
+import com.it.xxhealth.common.Result;
+import com.it.xxhealth.dto.OrdersPageRequestDto;
+import com.it.xxhealth.dto.OrdersPageResponseDto;
 import com.it.xxhealth.entity.Orders;
 import com.it.xxhealth.service.OrdersService;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 用户端 - 预约订单接口（按文档命名）
- */
 @RestController
 @RequestMapping("/orders")
 public class OrdersController {
+    private final OrdersService ordersService;
 
-    @Autowired
-    private OrdersService ordersService;
-
-    /**
-     * 根据手机号查询是否有未归档预约，返回未归档订单数量
-     */
-    @PostMapping("/getOrdersByUserId")
-    public int getOrdersByUserId(@RequestBody Orders orders) {
-        if (orders == null || orders.getUserid() == null) {
-            return 0;
-        }
-        return ordersService.countUnarchived(orders.getUserid());
+    public OrdersController(OrdersService ordersService) {
+        this.ordersService = ordersService;
     }
 
-    /**
-     * 添加体检预约，返回 1 成功；0 重复预约；-2 日期早于今天
-     */
-    @PostMapping("/saveOrders")
-    public int saveOrders(@RequestBody Orders orders) {
-        if (orders == null || orders.getUserid() == null || orders.getHpid() == null
-                || orders.getSmid() == null || orders.getOrderdate() == null) {
-            return 0;
+    @PostMapping("/listOrders")
+    public Result<OrdersPageResponseDto> listOrders(
+            @RequestBody(required = false) OrdersPageRequestDto request) {
+        if (request == null) {
+            request = new OrdersPageRequestDto();
         }
-        return ordersService.saveOrder(orders);
+        return Result.success(ordersService.listOrders(request));
     }
 
-    /**
-     * 根据用户编号和订单状态查询预约列表，state 为 null 查全部
-     */
-    @PostMapping("/listOrdersByUserId")
-    public List<OrdersDto> listOrdersByUserId(@RequestBody Orders orders) {
-        if (orders == null || orders.getUserid() == null) {
-            return new ArrayList<>();
-        }
-        return ordersService.listOrders(orders.getUserid(), orders.getState());
-    }
-
-    /**
-     * 根据预约编号删除预约（只能删未归档的），返回 1 成功；-1 已归档；0 不存在
-     */
-    @PostMapping("/removeOrders")
-    public int removeOrders(@RequestBody Orders orders) {
-        if (orders == null || orders.getOrderid() == null) {
-            return 0;
-        }
-        return ordersService.removeOrder(orders.getOrderid());
-    }
-
-    /**
-     * 根据预约编号查询预约详情
-     */
     @PostMapping("/getOrdersById")
-    public OrdersDto getOrdersById(@RequestBody Orders orders) {
+    public Result<Orders> getOrdersById(@RequestBody Orders orders) {
         if (orders == null || orders.getOrderid() == null) {
-            return null;
+            return Result.error(400, "预约编号不能为空");
         }
-        return ordersService.getOrderDetail(orders.getOrderid());
+        Orders result = ordersService.getOrdersById(orders.getOrderid());
+        return result == null ? Result.error(404, "预约订单不存在") : Result.success(result);
+    }
+
+    @PostMapping("/updateOrdersState")
+    public Result<Integer> updateOrdersState(@RequestBody Orders orders) {
+        if (orders == null || orders.getOrderid() == null) {
+            return Result.error(400, "预约编号不能为空");
+        }
+        if (orders.getState() == null || (orders.getState() != 1 && orders.getState() != 2)) {
+            return Result.error(400, "订单状态只能为1（未归档）或2（已归档）");
+        }
+        int updated = ordersService.updateOrdersState(orders.getOrderid(), orders.getState());
+        return updated == 1 ? Result.success(updated) : Result.error(404, "预约订单不存在");
     }
 }
