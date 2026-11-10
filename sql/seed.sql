@@ -18,6 +18,7 @@ TRUNCATE TABLE setmeal;
 TRUNCATE TABLE hospital;
 TRUNCATE TABLE users;
 TRUNCATE TABLE doctor;
+TRUNCATE TABLE message;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- =============================================
@@ -96,9 +97,14 @@ INSERT INTO users (userId, password, realName, sex, identityCard, birthday, user
 -- 7. 预约订单（state: 1 未归档 / 2 已归档）
 -- =============================================
 INSERT INTO orders (orderId, orderDate, userId, hpId, smId, state) VALUES
-(1, '2026-11-06', '13800000001', 1, 2, 1),
-(2, '2026-10-20', '13800000001', 1, 2, 2),
-(3, '2026-10-15', '13800000002', 2, 3, 2);
+(1, CURDATE(), '13800000001', 1, 2, 1),
+(2, DATE_SUB(CURDATE(), INTERVAL 1 DAY), '13800000001', 1, 2, 2),
+(3, DATE_SUB(CURDATE(), INTERVAL 2 DAY), '13800000002', 2, 3, 2),
+(4, CURDATE(), '13800000002', 1, 3, 1),
+(5, CURDATE(), '13800000001', 1, 1, 1),
+(6, CURDATE(), '13800000002', 2, 2, 1),
+(7, DATE_ADD(CURDATE(), INTERVAL 1 DAY), '13800000001', 1, 2, 1),
+(8, DATE_ADD(CURDATE(), INTERVAL 1 DAY), '13800000002', 2, 3, 1);
 
 -- =============================================
 -- 8. 总检结论
@@ -155,3 +161,35 @@ INSERT INTO cidetailedreport (cidrId, name, unit, minrange, maxrange, normalValu
 (31, '总胆固醇',     'mmol/L',  0,    5.2,  NULL, '<5.2',        1, '4.2',    0, 15, 3),
 (32, '空腹血糖',     'mmol/L',  3.9,  6.1,  NULL, '3.9-6.1',     1, '4.8',    0, 16, 3),
 (33, '腹部彩超结论', NULL,      NULL, NULL, NULL, NULL,          4, '未见异常', 0, 17, 3);
+
+-- =============================================
+-- 11. 医生（登录账号 D001 / 123456）
+-- =============================================
+INSERT INTO doctor (docId, docCode, realName, password, sex, deptno) VALUES
+(1, 'D001', '张医生', '123456', 1, 2);
+
+-- =============================================
+-- 12. 今日预约的体检报告（订单 4：含异常项，用于日程异常提醒）
+-- =============================================
+INSERT INTO cireport (cirId, ciId, ciName, orderId) VALUES
+(18, 2, '血常规', 4), (19, 6, '血脂', 4);
+
+INSERT INTO cidetailedreport (cidrId, name, unit, minrange, maxrange, normalValue, normalValueString, type, value, isError, ciId, orderId) VALUES
+(34, '白细胞',   '10^9/L', 4,   10,  NULL, '4.0-10.0', 1, '5.6', 0, 18, 4),
+(35, '血红蛋白', 'g/L',    120, 160, NULL, '120-160',  1, '108', 1, 18, 4),
+(36, '总胆固醇', 'mmol/L', 0,   5.2, NULL, '<5.2',     1, '6.1', 1, 19, 4);
+
+-- =============================================
+-- 13. 消息通知
+-- =============================================
+INSERT INTO message (msgId, type, title, content, isRead, createTime) VALUES
+(1,  '预约提醒', '预约提醒', '您有一位新预约：张伟，体检时间为今天 09:00，请提前做好准备。', 0, NOW() - INTERVAL 10 MINUTE),
+(2,  '报告通知', '报告通知', '李娜的体检报告已生成，请登录系统查看。', 0, NOW() - INTERVAL 2 HOUR),
+(3,  '异常提醒', '异常提醒', '李娜的体检结果中发现血红蛋白偏低，请关注并进一步检查。', 0, NOW() - INTERVAL 4 HOUR),
+(4,  '系统通知', '系统通知', '系统将于本周日 02:00-04:00 进行例行维护，期间部分功能可能受影响。', 1, NOW() - INTERVAL 1 DAY),
+(5,  '预约提醒', '预约提醒', '您有一位新预约：张伟，体检时间为明天 08:30，请提前做好准备。', 1, NOW() - INTERVAL 1 DAY),
+(6,  '报告通知', '报告通知', '张伟的体检报告已生成，请登录系统查看。', 1, NOW() - INTERVAL 2 DAY),
+(7,  '异常提醒', '异常提醒', '李娜的血脂检查结果偏高，建议复查。', 1, NOW() - INTERVAL 3 DAY),
+(8,  '系统通知', '系统通知', '您的账号已在新设备登录，如非本人操作请及时修改密码。', 1, NOW() - INTERVAL 4 DAY),
+(9,  '其他消息', '排班调整', '下周一门诊排班有调整，请查看最新排班表。', 1, NOW() - INTERVAL 5 DAY),
+(10, '其他消息', '培训通知', '本周五下午三点在会议室开展体检报告规范填报培训。', 1, NOW() - INTERVAL 6 DAY);

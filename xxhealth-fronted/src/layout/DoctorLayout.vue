@@ -107,31 +107,44 @@ const avatarText = computed(() => {
 })
 
 const menuItems = [
-  { key: 'workbench', label: '工作台', icon: 'Grid', path: '/workbench' },
-  { key: 'appointment', label: '我的预约', icon: 'Calendar', path: '/appointment' },
-  { key: 'report', label: '体检报告', icon: 'Document', path: '/report/create' },
-  { key: 'patient', label: '患者管理', icon: 'User', path: '/patient' },
-  { key: 'setmeal', label: '体检套餐', icon: 'FirstAidKit', path: '/setmeal' },
-  { key: 'schedule', label: '日程管理', icon: 'Calendar', path: '/schedule' },
-  { key: 'message', label: '消息通知', icon: 'Bell', path: '/message', badge: 3 },
-  { key: 'setting', label: '系统设置', icon: 'Setting', path: '/setting' }
+  { key: 'workbench', label: '工作台', icon: 'Grid', path: '/doctor/workbench' },
+  { key: 'appointment', label: '我的预约', icon: 'Calendar', path: '/doctor/appointment' },
+  { key: 'report', label: '体检报告', icon: 'Document', path: '/doctor/report/create' },
+  { key: 'patient', label: '患者管理', icon: 'User', path: '/doctor/patient' },
+  { key: 'setmeal', label: '体检套餐', icon: 'FirstAidKit', path: '/doctor/setmeal' },
+  { key: 'schedule', label: '日程管理', icon: 'Calendar', path: '/doctor/schedule' },
+  { key: 'message', label: '消息通知', icon: 'Bell', path: '/doctor/message', badge: 3 },
+  { key: 'setting', label: '系统设置', icon: 'Setting', path: '/doctor/setting' }
 ]
 
 const isActive = (item) => {
-  if (item.key === 'report') return route.path.startsWith('/report')
+  if (item.key === 'report') return route.path.startsWith('/doctor/report')
   return route.path === item.path
 }
 
 const breadcrumbs = computed(() => {
-  if (route.path.startsWith('/report/create')) return ['体检报告', '新建报告']
-  if (route.path.startsWith('/report/edit')) return ['体检报告', '编辑报告']
-  if (route.path.startsWith('/report/detail')) return ['体检报告', '报告详情']
+  const path = route.path
+  if (path.startsWith('/doctor/report/create')) return ['体检报告', '新建报告']
+  if (path.startsWith('/doctor/report/edit')) return ['体检报告', '编辑报告']
+  if (path.startsWith('/doctor/report/detail')) return ['体检报告', '报告详情']
+  if (path.startsWith('/doctor/setmeal')) return ['体检套餐']
+  if (path.startsWith('/doctor/schedule')) return ['日程管理']
+  if (path.startsWith('/doctor/message')) return ['消息通知']
+  if (path.startsWith('/doctor/setting')) return ['系统设置']
   return ['体检报告']
 })
 
+const doctorRoutes = {
+  report: '/doctor/report/create',
+  setmeal: '/doctor/setmeal',
+  schedule: '/doctor/schedule',
+  message: '/doctor/message',
+  setting: '/doctor/setting'
+}
+
 function handleMenu(item) {
-  if (item.key === 'report') {
-    router.push('/report/create')
+  if (doctorRoutes[item.key]) {
+    router.push(doctorRoutes[item.key])
     return
   }
   handleUnimplemented(item.label)
@@ -144,7 +157,7 @@ function handleUnimplemented(label) {
 function handleCommand(command) {
   if (command === 'logout') {
     removeSessionStorage('doctor')
-    router.push('/login')
+    router.push('/doctor/login')
   }
 }
 </script>

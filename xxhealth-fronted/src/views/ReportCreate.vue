@@ -348,7 +348,7 @@ async function handleCreateAndEdit() {
       creating.value = false
       return
     }
-    router.push(`/report/edit/${effectiveOrderId.value}`)
+    router.push(`/doctor/report/edit/${effectiveOrderId.value}`)
   } catch (e) {
     // 拦截器已提示
   } finally {
@@ -357,7 +357,7 @@ async function handleCreateAndEdit() {
 }
 
 function goBack() {
-  router.push('/report/create')
+  router.push('/doctor/report/create')
 }
 
 onMounted(() => {

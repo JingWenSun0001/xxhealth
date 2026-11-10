@@ -269,3 +269,45 @@ const orders = res2.data
 | overallResult | `OverallresultController` | 怿安 |
 | ciReport | `CireportController` | 怿安 |
 | calendar | `CalendarController` | 怿安 |
+
+---
+
+## 医生端扩展接口（体检报告 / 日程 / 消息 / 设置）
+
+> 统一返回 `Result { code, message, data }`，`code=200` 成功；当前后端 context-path 为 `/tijiancms`。
+
+### schedule（日程管理）
+
+- `POST /tijiancms/schedule/listByMonth`
+  - 参数：`{ "year": 2026, "month": 11 }`
+  - 返回：当月预约列表，含 `orderid / date / timeSlot / patientName / sex / age / setmealName / state / stateText / abnormalCount`
+  - 说明：`timeSlot` 按当天预约顺序生成（orders 暂无时间段字段），后续可加字段替换
+- `POST /tijiancms/schedule/dayDetail`
+  - 参数：`{ "date": "2026-11-10" }`
+  - 返回：`{ date, appointments, checkReminders, abnormalReminders }`
+  - 说明：检查提醒取套餐前 3 个检查项；异常提醒取当天预约的 `cidetailedreport.isError=1`
+
+### message（消息通知）
+
+- `POST /tijiancms/message/list`
+  - 参数：`{ "type": "预约提醒", "keyword": "", "status": "unread" }`（均可空，status: all/unread/read）
+  - 返回：消息列表，按时间倒序
+- `POST /tijiancms/message/markRead`
+  - 参数：`{ "msgid": 1 }`
+- `POST /tijiancms/message/markAllRead`
+  - 参数：无
+- `POST /tijiancms/message/unreadCount`
+  - 参数：无
+
+### doctor（系统设置）
+
+- `POST /tijiancms/doctor/updateDoctor`
+  - 参数：`{ "docid": 1, "realname": "张医生", "sex": 1, "deptno": 2 }`
+- `POST /tijiancms/doctor/updatePassword`
+  - 参数：`{ "docid": 1, "oldPassword": "123456", "newPassword": "654321" }`
+  - 说明：原密码错误或新密码少于 6 位时返回 `code=400`
+
+### 数据库变更
+
+- 新增 `message` 表（见 `sql/init.sql` 第 11 节）
+- `sql/seed.sql` 已补充：医生账号（D001/123456）、10 条消息、按 `CURDATE()` 生成的 8 条预约及订单 4 的体检报告

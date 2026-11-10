@@ -444,11 +444,11 @@ async function handleSave(isSubmit) {
 }
 
 function goDetail() {
-  router.push(`/report/detail/${orderid}`)
+  router.push(`/doctor/report/detail/${orderid}`)
 }
 
 function switchPatient() {
-  router.push('/report/create')
+  router.push('/doctor/report/create')
 }
 
 onBeforeRouteLeave((to, from, next) => {

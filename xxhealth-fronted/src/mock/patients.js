@@ -5,40 +5,40 @@
  *      对应接口就绪后请替换为真实接口返回值：
  *        - orders/listOrders 或 orders/getOrdersById
  *        - users/getUsersById
- *      当前仅用于按 front(1) 设计稿还原页面结构，方便联调与演示。
+ *      当前数据与 sql/seed.sql 的演示数据保持一致，方便联调与演示。
  */
 export const mockPatients = [
   {
     orderid: 1,
-    name: '张三',
+    name: '张伟',
     sex: 1,
-    age: 32,
-    idcard: '410********1234',
-    phone: '138****5678',
+    age: 36,
+    idcard: '210********1234',
+    phone: '138****0001',
     setmeal: '中青年体检套餐',
-    examDate: '2025-06-18',
+    examDate: '2026-11-06',
     status: '待录入'
   },
   {
     orderid: 2,
-    name: '李四',
+    name: '张伟',
     sex: 1,
-    age: 45,
-    idcard: '410********5678',
-    phone: '139****6789',
-    setmeal: '高端体检套餐',
-    examDate: '2025-06-18',
-    status: '待录入'
+    age: 36,
+    idcard: '210********1234',
+    phone: '138****0001',
+    setmeal: '中青年体检套餐',
+    examDate: '2026-10-20',
+    status: '已归档'
   },
   {
     orderid: 3,
-    name: '王五',
+    name: '李娜',
     sex: 0,
-    age: 28,
-    idcard: '410********9012',
-    phone: '137****9012',
-    setmeal: '基础体检套餐',
-    examDate: '2025-06-16',
+    age: 31,
+    idcard: '210********2345',
+    phone: '138****0002',
+    setmeal: '女性关爱套餐',
+    examDate: '2026-10-15',
     status: '已归档'
   }
 ]
@@ -51,7 +51,7 @@ export function findMockPatient(orderid) {
 }
 
 /**
- * 患者展示文案：张三 · 男 · 32岁
+ * 患者展示文案：张伟 · 男 · 36岁
  */
 export function patientText(patient) {
   if (!patient) return ''
@@ -68,7 +68,7 @@ export function mockReportHistory(current) {
     ? [
         {
           orderid: current.orderid,
-          date: current.examDate || '2025-06-16',
+          date: current.examDate || '2026-11-06',
           setmeal: current.setmeal || '中青年体检套餐',
           status: '已生成',
           current: true
@@ -76,8 +76,8 @@ export function mockReportHistory(current) {
       ]
     : []
   return base.concat([
-    { orderid: null, date: '2024-06-18', setmeal: '中青年体检套餐', status: '已归档', current: false },
-    { orderid: null, date: '2023-06-20', setmeal: '中青年体检套餐', status: '已归档', current: false },
-    { orderid: null, date: '2022-06-15', setmeal: '基础体检套餐', status: '已归档', current: false }
+    { orderid: null, date: '2025-06-18', setmeal: '中青年体检套餐', status: '已归档', current: false },
+    { orderid: null, date: '2024-06-20', setmeal: '中青年体检套餐', status: '已归档', current: false },
+    { orderid: null, date: '2023-06-15', setmeal: '基础体检套餐', status: '已归档', current: false }
   ])
 }

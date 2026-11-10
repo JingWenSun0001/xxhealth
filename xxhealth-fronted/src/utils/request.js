@@ -1,8 +1,9 @@
 import axios from 'axios'
 
-// 后端 context-path 是 /tijian，开发环境由 vue.config.js 代理到 8080
+// 统一走开发代理：/api -> http://localhost:8088/tijiancms
+// 后端 context-path 为 /tijiancms（见 application.yml）
 const request = axios.create({
-  baseURL: '/tijian',
+  baseURL: '/api',
   timeout: 10000
 })
 

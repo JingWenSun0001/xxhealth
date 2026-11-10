@@ -405,7 +405,7 @@ function handleHistory(item) {
 }
 
 function goEdit() {
-  router.push(`/report/edit/${orderid}`)
+  router.push(`/doctor/report/edit/${orderid}`)
 }
 
 onMounted(loadReport)

@@ -17,8 +17,8 @@ request.interceptors.response.use(
       }
       if (res.code === 401) {
         sessionStorage.removeItem('doctor')
-        if (!window.location.hash.includes('/login')) {
-          window.location.hash = '#/login'
+        if (!window.location.hash.includes('/doctor/login')) {
+          window.location.hash = '#/doctor/login'
         }
       }
       ElMessage.error(res.message || '请求失败')

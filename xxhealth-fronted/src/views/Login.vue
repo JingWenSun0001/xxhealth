@@ -85,6 +85,7 @@
 
         <div class="form-footer">
           <span><el-icon><InfoFilled /></el-icon> 账号由体检管理系统统一分配</span>
+          <a class="user-link" @click="goUserLogin">用户端登录 →</a>
         </div>
       </section>
     </div>
@@ -134,12 +135,15 @@ async function handleLogin() {
     setSessionStorage('doctor', doctor)
     ElMessage.success(`欢迎回来，${doctor.realname || '医生'}`)
     const redirect = route.query.redirect
-    router.push(typeof redirect === 'string' && redirect ? redirect : '/report/create')
+    router.push(typeof redirect === 'string' && redirect ? redirect : '/doctor/report/create')
   } catch (e) {
     // 错误提示已由 axios 拦截器统一处理
   } finally {
     loading.value = false
   }
+}
+function goUserLogin() {
+  router.push('/login')
 }
 </script>
 
@@ -326,7 +330,18 @@ async function handleLogin() {
   color: var(--text-3);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
+}
+
+.user-link {
+  color: var(--text-3);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.user-link:hover {
+  color: var(--brand);
 }
 
 .form-footer span {
