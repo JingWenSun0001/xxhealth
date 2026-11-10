@@ -165,8 +165,8 @@ INSERT INTO cidetailedreport (cidrId, name, unit, minrange, maxrange, normalValu
 -- =============================================
 -- 11. 医生（登录账号 D001 / 123456）
 -- =============================================
-INSERT INTO doctor (docId, docCode, realName, password, sex, deptno) VALUES
-(1, 'D001', '张医生', '123456', 1, 2);
+INSERT INTO doctor (docId, docCode, realName, password, phone, sex, deptno) VALUES
+(1, 'D001', '张医生', '123456', '13800000000', 1, 2);
 
 -- =============================================
 -- 12. 今日预约的体检报告（订单 4：含异常项，用于日程异常提醒）

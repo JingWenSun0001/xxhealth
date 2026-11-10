@@ -21,3 +21,10 @@ export function updateDoctor(data) {
 export function updatePassword(data) {
   return request.post('/doctor/updatePassword', data)
 }
+
+/**
+ * 医生注册
+ */
+export function registerDoctor(data) {
+  return request.post('/doctor/register', data)
+}

@@ -77,4 +77,52 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor>
         // 新旧密码相同时受影响行数为 0，这里以“原密码校验通过”为准
         return 1;
     }
+
+    /**
+     * 医生注册：校验编码唯一 + 手机号格式
+     *
+     * @return 1 成功 / -1 编码已存在 / 0 参数不合法
+     */
+    @Override
+    public int register(Doctor doctor) {
+        if (doctor == null) {
+            return 0;
+        }
+        String doccode = trimToEmpty(doctor.getDoccode());
+        String realname = trimToEmpty(doctor.getRealname());
+        String phone = trimToEmpty(doctor.getPhone());
+        String password = doctor.getPassword();
+
+        if (doccode.isEmpty() || doccode.length() < 3 || doccode.length() > 20) {
+            return 0;
+        }
+        if (realname.isEmpty() || realname.length() > 20) {
+            return 0;
+        }
+        if (!phone.matches("\\d{11}")) {
+            return 0;
+        }
+        if (password == null || password.length() < 6 || password.length() > 20) {
+            return 0;
+        }
+
+        Long exists = this.baseMapper.selectCount(
+                new LambdaQueryWrapper<Doctor>().eq(Doctor::getDoccode, doccode));
+        if (exists != null && exists > 0) {
+            return -1;
+        }
+
+        Doctor entity = new Doctor();
+        entity.setDoccode(doccode);
+        entity.setRealname(realname);
+        entity.setPhone(phone);
+        entity.setPassword(password);
+        entity.setSex(doctor.getSex() == null ? 1 : doctor.getSex());
+        entity.setDeptno(doctor.getDeptno() == null ? 1 : doctor.getDeptno());
+        return this.baseMapper.insert(entity) > 0 ? 1 : 0;
+    }
+
+    private String trimToEmpty(String text) {
+        return text == null ? "" : text.trim();
+    }
 }

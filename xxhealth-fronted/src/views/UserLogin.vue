@@ -74,7 +74,7 @@
         </el-form>
 
         <div class="form-footer">
-          <span>还没有账号？<a class="link" @click="goRegister">立即注册</a></span>
+          <span>没有账号？请联系体检中心</span>
           <a class="link doctor-link" @click="goDoctorLogin">医生端登录 →</a>
         </div>
       </section>
@@ -136,10 +136,6 @@ async function handleLogin() {
   } finally {
     loading.value = false
   }
-}
-
-function goRegister() {
-  router.push('/register')
 }
 
 function goDoctorLogin() {

@@ -145,6 +145,7 @@ CREATE TABLE doctor (
                         docCode VARCHAR(20) NOT NULL UNIQUE COMMENT '医生编码 (登录用)',
                         realName VARCHAR(20) NOT NULL COMMENT '真实姓名',
                         password VARCHAR(20) NOT NULL COMMENT '密码 (登录用)',
+                        phone VARCHAR(20) COMMENT '手机号',
                         sex INT NOT NULL COMMENT '性别',
                         deptno INT NOT NULL COMMENT '所属科室 (1:检验科; 2:内科; 3:外科)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='医生信息表';

@@ -87,6 +87,10 @@
           <span><el-icon><InfoFilled /></el-icon> 账号由体检管理系统统一分配</span>
           <a class="user-link" @click="goUserLogin">用户端登录 →</a>
         </div>
+
+        <p class="register-row">
+          还没有账号？<a class="register-link" @click="goRegister">注册医生账号</a>
+        </p>
       </section>
     </div>
 
@@ -144,6 +148,15 @@ async function handleLogin() {
 }
 function goUserLogin() {
   router.push('/login')
+}
+
+function goRegister() {
+  router.push('/register')
+}
+
+// 注册成功后回跳登录页时自动带出用户名
+if (route.query.doccode) {
+  form.doccode = String(route.query.doccode)
 }
 </script>
 
@@ -342,6 +355,19 @@ function goUserLogin() {
 
 .user-link:hover {
   color: var(--brand);
+}
+
+.register-row {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+
+.register-link {
+  color: var(--brand);
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .form-footer span {

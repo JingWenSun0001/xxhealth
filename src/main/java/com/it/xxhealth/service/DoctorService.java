@@ -32,4 +32,11 @@ public interface DoctorService extends IService<Doctor> {
      */
     int updatePassword(Integer docid, String oldPassword, String newPassword);
 
+    /**
+     * 医生注册：编码唯一，默认性别男、科室检验科
+     *
+     * @return 1 成功 / -1 编码已存在 / 0 参数不合法
+     */
+    int register(Doctor doctor);
+
 }

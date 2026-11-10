@@ -65,4 +65,22 @@ public class DoctorController {
         }
         return Result.success(rows);
     }
+
+    /**
+     * 医生注册
+     */
+    @PostMapping("/register")
+    public Result<Integer> register(@RequestBody Doctor doctor) {
+        if (doctor == null) {
+            return Result.error(400, "注册信息不能为空");
+        }
+        int rows = doctorService.register(doctor);
+        if (rows == -1) {
+            return Result.error(400, "用户名已被注册，请更换");
+        }
+        if (rows <= 0) {
+            return Result.error(400, "请检查用户名、姓名、手机号或密码格式");
+        }
+        return Result.success(rows);
+    }
 }

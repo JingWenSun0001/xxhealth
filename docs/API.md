@@ -311,3 +311,10 @@ const orders = res2.data
 
 - 新增 `message` 表（见 `sql/init.sql` 第 11 节）
 - `sql/seed.sql` 已补充：医生账号（D001/123456）、10 条消息、按 `CURDATE()` 生成的 8 条预约及订单 4 的体检报告
+
+### doctor（医生注册）
+
+- `POST /tijiancms/doctor/register`
+  - 参数：`{ "doccode": "D002", "realname": "李医生", "phone": "13900000001", "password": "123456" }`
+  - 返回：`1` 成功；用户名已存在返回 `code=400`；参数不合法返回 `code=400`
+  - 说明：`doctor` 表新增 `phone` 字段（见 `sql/init.sql`），注册时性别默认男、科室默认检验科
