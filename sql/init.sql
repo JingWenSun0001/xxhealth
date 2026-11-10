@@ -145,6 +145,18 @@ CREATE TABLE doctor (
                         docCode VARCHAR(20) NOT NULL UNIQUE COMMENT '医生编码 (登录用)',
                         realName VARCHAR(20) NOT NULL COMMENT '真实姓名',
                         password VARCHAR(20) NOT NULL COMMENT '密码 (登录用)',
+                        phone VARCHAR(20) COMMENT '手机号',
                         sex INT NOT NULL COMMENT '性别',
                         deptno INT NOT NULL COMMENT '所属科室 (1:检验科; 2:内科; 3:外科)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='医生信息表';
+-- =============================================
+-- 11. 消息通知表
+-- =============================================
+CREATE TABLE message (
+                         msgId INT PRIMARY KEY AUTO_INCREMENT COMMENT '消息编号',
+                         type VARCHAR(20) NOT NULL COMMENT '消息类型：预约提醒/报告通知/异常提醒/系统通知/其他消息',
+                         title VARCHAR(50) NOT NULL COMMENT '消息标题',
+                         content VARCHAR(500) COMMENT '消息内容',
+                         isRead INT NOT NULL DEFAULT 0 COMMENT '是否已读 (0:未读; 1:已读)',
+                         createTime DATETIME NOT NULL COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息通知表';

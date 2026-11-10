@@ -34,6 +34,11 @@ public class Doctor {
     private String password;
 
     /**
+     * 手机号（注册时填写）
+     */
+    private String phone;
+
+    /**
      * 性别
      */
     private Integer sex;
