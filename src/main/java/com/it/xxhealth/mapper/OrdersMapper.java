@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.it.xxhealth.dto.OrdersPageRequestDto;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+import java.util.Map;
+
 /**
 * @author Ljz
 * @description 针对表【orders(体检预约订单表)】的数据库操作Mapper
@@ -19,6 +22,15 @@ public interface OrdersMapper extends BaseMapper<Orders> {
                                    @Param("request") OrdersPageRequestDto request);
 
     Orders selectOrdersById(@Param("orderid") Integer orderid);
+
+    /**
+     * 统计某医院某月每天的预约数量（用于预约日历）
+     *
+     * @return 每行包含 day（几号）、cnt（数量）
+     */
+    List<Map<String, Object>> countByMonth(@Param("hpid") Integer hpid,
+                                           @Param("year") Integer year,
+                                           @Param("month") Integer month);
 
 }
 

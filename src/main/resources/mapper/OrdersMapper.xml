@@ -105,4 +105,14 @@
         <include refid="Orders_With_Details_From"/>
         WHERE o.orderId = #{orderid}
     </select>
+
+    <select id="countByMonth" resultType="java.util.Map">
+        SELECT DAY(o.orderDate) AS day, COUNT(*) AS cnt
+        FROM orders o
+        WHERE o.hpId = #{hpid}
+          AND YEAR(o.orderDate) = #{year}
+          AND MONTH(o.orderDate) = #{month}
+        GROUP BY DAY(o.orderDate)
+        ORDER BY day
+    </select>
 </mapper>

@@ -8,7 +8,7 @@ spring:
     name: xxhealth
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${XXHEALTH_DB_URL:jdbc:mysql://localhost:3306/health_check_system?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true}
+    url: ${XXHEALTH_DB_URL:jdbc:mysql://localhost:3306/health_check_system?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true}
     username: ${XXHEALTH_DB_USERNAME:root}
     password: ${XXHEALTH_DB_PASSWORD:123456}
   jackson:

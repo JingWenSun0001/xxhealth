@@ -1,7 +1,7 @@
 <template>
-  <div class="layout">
+  <div class="doctor-shell">
     <!-- 侧边栏 -->
-    <aside class="sidebar">
+    <aside class="side-panel">
       <div class="brand">
         <div class="brand-logo">
           <svg viewBox="0 0 32 32" width="26" height="26">
@@ -39,8 +39,8 @@
     </aside>
 
     <!-- 主区域 -->
-    <div class="main">
-      <header class="topbar">
+    <div class="main-panel">
+      <header class="top-bar">
         <div class="breadcrumb">
           <el-icon class="home-icon"><HomeFilled /></el-icon>
           <span class="crumb">工作台</span>
@@ -75,7 +75,7 @@
         </div>
       </header>
 
-      <main class="content">
+      <main class="page-main">
         <router-view v-slot="{ Component }">
           <transition name="fade-slide" mode="out-in">
             <component :is="Component" />
@@ -108,7 +108,7 @@ const avatarText = computed(() => {
 
 const menuItems = [
   { key: 'workbench', label: '工作台', icon: 'Grid', path: '/doctor/workbench' },
-  { key: 'appointment', label: '我的预约', icon: 'Calendar', path: '/doctor/appointment' },
+  { key: 'orders', label: '预约订单', icon: 'Tickets', path: '/orders' },
   { key: 'report', label: '体检报告', icon: 'Document', path: '/doctor/report/create' },
   { key: 'patient', label: '患者管理', icon: 'User', path: '/doctor/patient' },
   { key: 'setmeal', label: '体检套餐', icon: 'FirstAidKit', path: '/doctor/setmeal' },
@@ -119,6 +119,7 @@ const menuItems = [
 
 const isActive = (item) => {
   if (item.key === 'report') return route.path.startsWith('/doctor/report')
+  if (item.key === 'orders') return route.path.startsWith('/orders')
   return route.path === item.path
 }
 
@@ -143,6 +144,10 @@ const doctorRoutes = {
 }
 
 function handleMenu(item) {
+  if (item.key === 'orders') {
+    router.push('/orders')
+    return
+  }
   if (doctorRoutes[item.key]) {
     router.push(doctorRoutes[item.key])
     return
@@ -163,7 +168,7 @@ function handleCommand(command) {
 </script>
 
 <style scoped>
-.layout {
+.doctor-shell {
   display: flex;
   width: 100%;
   height: 100%;
@@ -172,7 +177,7 @@ function handleCommand(command) {
 }
 
 /* ---------- 侧边栏 ---------- */
-.sidebar {
+.side-panel {
   width: 224px;
   flex-shrink: 0;
   background: var(--sidebar-bg);
@@ -308,14 +313,14 @@ function handleCommand(command) {
 }
 
 /* ---------- 主区域 ---------- */
-.main {
+.main-panel {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
-.topbar {
+.top-bar {
   height: 64px;
   flex-shrink: 0;
   background: rgba(255, 255, 255, 0.86);
@@ -417,7 +422,7 @@ function handleCommand(command) {
   color: var(--text-3);
 }
 
-.content {
+.page-main {
   flex: 1;
   overflow-y: auto;
   padding: 24px 28px 32px;
