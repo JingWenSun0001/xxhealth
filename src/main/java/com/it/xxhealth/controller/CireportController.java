@@ -42,7 +42,7 @@ public class CireportController {
      * @return 检查项（含明细）列表
      */
     @PostMapping("/listCiReport")
-    public Result<List<CiReportDto>> listCiReport(@RequestBody Cireport cireport) {
-        return Result.success(cireportService.listCiReport(cireport));
+    public List<CiReportDto> listCiReport(@RequestBody Cireport cireport) {
+        return cireportService.listCiReport(cireport);
     }
 }

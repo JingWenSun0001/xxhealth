@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.xxhealth.mapper.CheckitemdetailedMapper">
+
+    <resultMap id="BaseResultMap" type="com.it.xxhealth.entity.Checkitemdetailed">
+            <id property="cdid" column="cdId" />
+            <result property="name" column="name" />
+            <result property="unit" column="unit" />
+            <result property="minrange" column="minrange" />
+            <result property="maxrange" column="maxrange" />
+            <result property="normalvalue" column="normalValue" />
+            <result property="normalvaluestring" column="normalValueString" />
+            <result property="type" column="type" />
+            <result property="ciid" column="ciId" />
+            <result property="remarks" column="remarks" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        cdId,name,unit,minrange,maxrange,normalValue,
+        normalValueString,type,ciId,remarks
+    </sql>
+</mapper>

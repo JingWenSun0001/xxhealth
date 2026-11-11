@@ -88,7 +88,7 @@ CREATE TABLE orders (
                         userId VARCHAR(11) NOT NULL COMMENT '客户编号',
                         hpId INT NOT NULL COMMENT '所属医院编号',
                         smId INT NOT NULL COMMENT '所属套餐编号',
-                        state INT NOT NULL COMMENT '订单状态 (1:未归档; 2:已归档)',
+                        state INT NOT NULL COMMENT '订单状态 (1:未归档; 2:已归档; 3:已取消)',
                         CONSTRAINT fk_orders_user FOREIGN KEY (userId) REFERENCES users(userId),
                         CONSTRAINT fk_orders_hospital FOREIGN KEY (hpId) REFERENCES hospital(hpId),
                         CONSTRAINT fk_orders_setmeal FOREIGN KEY (smId) REFERENCES setmeal(smId)

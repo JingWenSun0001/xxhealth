@@ -28,13 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
-* @author Ljz
-* @description 针对表【cireport(体检报告检查项信息表)】的数据库操作Service实现
-* @createDate 2026-11-04 09:47:06
-*/
+ * 报告检查项 Service 实现
+ */
 @Service
-public class CireportServiceImpl extends ServiceImpl<CireportMapper, Cireport>
-    implements CireportService{
+public class CireportServiceImpl extends ServiceImpl<CireportMapper, Cireport> implements CireportService {
 
     @Resource
     private OrdersMapper ordersMapper;

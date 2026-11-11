@@ -4,14 +4,15 @@ import com.it.xxhealth.dto.CiReportDto;
 import com.it.xxhealth.entity.Cireport;
 import com.it.xxhealth.entity.Orders;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.it.xxhealth.dto.CiReportDto;
+import com.it.xxhealth.entity.Cireport;
+import java.util.List;
 
 import java.util.List;
 
 /**
-* @author Ljz
-* @description 针对表【cireport(体检报告检查项信息表)】的数据库操作Service
-* @createDate 2026-11-04 09:47:06
-*/
+ * 报告检查项 Service
+ */
 public interface CireportService extends IService<Cireport> {
 
     /**
@@ -35,4 +36,5 @@ public interface CireportService extends IService<Cireport> {
      */
     List<CiReportDto> listCiReport(Cireport cireport);
 
+ default List<CiReportDto> listByOrderId(Integer id) { Cireport r=new Cireport(); r.setOrderid(id); return listCiReport(r); }
 }

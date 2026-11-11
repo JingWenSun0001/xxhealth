@@ -1,14 +1,12 @@
 package com.it.xxhealth.service;
 
-import com.it.xxhealth.entity.Overallresult;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.it.xxhealth.entity.Overallresult;
 import java.util.List;
 
 /**
-* @author Ljz
-* @description 针对表【overallresult(总检结论信息表)】的数据库操作Service
-* @createDate 2026-11-04 09:47:06
-*/
+ * 总检结论 Service
+ */
 public interface OverallresultService extends IService<Overallresult> {
 
     List<Overallresult> listOverallResultByOrderId(Integer orderid);
@@ -18,4 +16,5 @@ public interface OverallresultService extends IService<Overallresult> {
     int updateOverallResult(Overallresult overallresult);
 
     int removeOverallResult(Integer orid);
+ default List<Overallresult> listByOrderId(Integer id) { return listOverallResultByOrderId(id); }
 }

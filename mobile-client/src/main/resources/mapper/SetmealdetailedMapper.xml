@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.xxhealth.mapper.SetmealdetailedMapper">
+
+    <resultMap id="BaseResultMap" type="com.it.xxhealth.entity.Setmealdetailed">
+            <id property="sdid" column="sdId" />
+            <result property="smid" column="smId" />
+            <result property="ciid" column="ciId" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        sdId,smId,ciId
+    </sql>
+</mapper>

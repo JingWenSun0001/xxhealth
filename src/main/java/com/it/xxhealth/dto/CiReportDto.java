@@ -42,4 +42,5 @@ public class CiReportDto implements Serializable {
      * 该检查项下的明细列表
      */
     private List<Cidetailedreport> cidetailedreports = new ArrayList<>();
+ public List<Cidetailedreport> getDetails() { return cidetailedreports; }
 }

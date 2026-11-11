@@ -1,15 +1,15 @@
 package com.it.xxhealth.service;
 
-import com.it.xxhealth.entity.Orders;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.it.xxhealth.dto.OrdersDto;
+import com.it.xxhealth.entity.Orders;
+import java.util.List;
 import com.it.xxhealth.dto.OrdersPageRequestDto;
 import com.it.xxhealth.dto.OrdersPageResponseDto;
 
 /**
-* @author Ljz
-* @description 针对表【orders(体检预约订单表)】的数据库操作Service
-* @createDate 2026-11-04 09:47:06
-*/
+ * 体检预约订单 Service
+ */
 public interface OrdersService extends IService<Orders> {
 
     OrdersPageResponseDto listOrders(OrdersPageRequestDto request);
@@ -17,4 +17,9 @@ public interface OrdersService extends IService<Orders> {
     Orders getOrdersById(Integer orderid);
 
     int updateOrdersState(Integer orderid, Integer state);
+ int countUnarchived(String userid);
+ int saveOrder(Orders orders);
+ List<OrdersDto> listOrders(String userid, Integer state);
+ OrdersDto getOrderDetail(Integer orderid);
+ int removeOrder(Integer orderid);
 }
