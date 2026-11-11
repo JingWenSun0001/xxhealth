@@ -30,4 +30,8 @@ public interface CireportService extends IService<Cireport> {
      */
     List<CiReportDto> listCiReport(Cireport cireport);
 
+<<<<<<< HEAD
+=======
+ default List<CiReportDto> listByOrderId(Integer id) { Cireport r=new Cireport(); r.setOrderid(id); return listCiReport(r); }
+>>>>>>> upstream/master
 }

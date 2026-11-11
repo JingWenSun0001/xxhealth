@@ -19,6 +19,22 @@ public class OverallResultController {
         this.overallresultService = overallresultService;
     }
 
+    @PostMapping("/saveOverallResult")
+    public com.it.xxhealth.common.Result<Integer> saveOverallResult(@RequestBody Overallresult body) {
+        if(body.getOrderid()==null||body.getTitle()==null||body.getTitle().trim().isEmpty()) return com.it.xxhealth.common.Result.error(400,"预约编号和结论标题不能为空");
+        return com.it.xxhealth.common.Result.success(overallresultService.saveOverallResult(body));
+    }
+    @PostMapping("/updateOverallResult")
+    public com.it.xxhealth.common.Result<Integer> updateOverallResult(@RequestBody Overallresult body) {
+        if(body.getOrid()==null) return com.it.xxhealth.common.Result.error(400,"结论编号不能为空");
+        return com.it.xxhealth.common.Result.success(overallresultService.updateOverallResult(body));
+    }
+    @PostMapping("/removeOverallResult")
+    public com.it.xxhealth.common.Result<Integer> removeOverallResult(@RequestBody Overallresult body) {
+        if(body.getOrid()==null) return com.it.xxhealth.common.Result.error(400,"结论编号不能为空");
+        return com.it.xxhealth.common.Result.success(overallresultService.removeOverallResult(body.getOrid()));
+    }
+
     @PostMapping("/listOverallResultByOrderId")
     public Result<List<Overallresult>> listOverallResultByOrderId(@RequestBody Overallresult overallresult) {
         if (overallresult == null || overallresult.getOrderid() == null) {

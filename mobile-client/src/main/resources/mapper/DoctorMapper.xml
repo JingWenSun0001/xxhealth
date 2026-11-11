@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.xxhealth.mapper.DoctorMapper">
+
+    <resultMap id="BaseResultMap" type="com.it.xxhealth.entity.Doctor">
+            <id property="docid" column="docId" />
+            <result property="doccode" column="docCode" />
+            <result property="realname" column="realName" />
+            <result property="password" column="password" />
+            <result property="sex" column="sex" />
+            <result property="deptno" column="deptno" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        docId,docCode,realName,password,sex,deptno
+    </sql>
+</mapper>

@@ -7,39 +7,40 @@ import com.it.xxhealth.dto.SetmealDto;
 import com.it.xxhealth.entity.Checkitem;
 import com.it.xxhealth.entity.Setmeal;
 import com.it.xxhealth.entity.Setmealdetailed;
-import com.it.xxhealth.mapper.CheckitemMapper;
-import com.it.xxhealth.mapper.SetmealMapper;
-import com.it.xxhealth.mapper.SetmealdetailedMapper;
+import com.it.xxhealth.service.CheckitemService;
 import com.it.xxhealth.service.SetmealService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
+import com.it.xxhealth.service.SetmealdetailedService;
+import com.it.xxhealth.mapper.SetmealMapper;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
 import java.util.List;
 
 /**
-* @author Ljz
-* @description 针对表【setmeal(体检套餐信息表)】的数据库操作Service实现
-* @createDate 2026-11-04 09:47:06
-*/
+ * 体检套餐信息表 Service 实现
+ */
 @Service
 public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal>
-    implements SetmealService{
+    implements SetmealService {
 
-    @Resource
-    private SetmealdetailedMapper setmealdetailedMapper;
+    @Autowired
+    private SetmealdetailedService setmealdetailedService;
 
-    @Resource
-    private CheckitemMapper checkitemMapper;
+    @Autowired
+    private CheckitemService checkitemService;
 
-    @Override
-    public List<Setmeal> listSetmeal() {
-        return list(new LambdaQueryWrapper<Setmeal>()
-                .orderByAsc(Setmeal::getType)
-                .orderByAsc(Setmeal::getSmid));
-    }
-
+    /**
+     * 按类型查套餐：type 为 null 查全部
+     */
     @Override
     public List<Setmeal> listSetmealByType(Integer type) {
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
@@ -47,41 +48,65 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal>
             wrapper.eq(Setmeal::getType, type);
         }
         wrapper.orderByAsc(Setmeal::getSmid);
-        return list(wrapper);
+        return baseMapper.selectList(wrapper);
     }
 
+    /**
+     * 套餐详情：套餐 + 套餐内的检查项（按明细录入顺序返回）
+     */
     @Override
     public SetmealDto getSetmealById(Integer smid) {
         if (smid == null) {
             return null;
         }
-        Setmeal setmeal = getById(smid);
+        Setmeal setmeal = baseMapper.selectById(smid);
         if (setmeal == null) {
             return null;
         }
 
         SetmealDto dto = new SetmealDto();
         BeanUtils.copyProperties(setmeal, dto);
+        dto.setItems(listItems(smid));
+        return dto;
+    }
 
-        List<Setmealdetailed> details = setmealdetailedMapper.selectList(
-                new LambdaQueryWrapper<Setmealdetailed>()
-                        .eq(Setmealdetailed::getSmid, smid)
-                        .orderByAsc(Setmealdetailed::getSdid));
+    /**
+     * 查询套餐包含的检查项：setmealdetailed -> checkitem
+     */
+    private List<CheckitemDto> listItems(Integer smid) {
+        LambdaQueryWrapper<Setmealdetailed> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Setmealdetailed::getSmid, smid).orderByAsc(Setmealdetailed::getSdid);
+        List<Setmealdetailed> details = setmealdetailedService.list(wrapper);
 
         List<CheckitemDto> items = new ArrayList<>();
+        if (details.isEmpty()) {
+            return items;
+        }
+
+        // 去重并保持套餐明细中的顺序
+        Set<Integer> ciids = new LinkedHashSet<>();
         for (Setmealdetailed detail : details) {
-            Checkitem checkitem = checkitemMapper.selectById(detail.getCiid());
+            if (detail.getCiid() != null) {
+                ciids.add(detail.getCiid());
+            }
+        }
+        if (ciids.isEmpty()) {
+            return items;
+        }
+
+        Map<Integer, Checkitem> checkitemMap = checkitemService.listByIds(ciids).stream()
+                .collect(Collectors.toMap(Checkitem::getCiid, Function.identity(), (a, b) -> a));
+
+        for (Integer ciid : ciids) {
+            Checkitem checkitem = checkitemMap.get(ciid);
             if (checkitem == null) {
                 continue;
             }
             CheckitemDto item = new CheckitemDto();
-            item.setCiid(checkitem.getCiid());
-            item.setCiname(checkitem.getCiname());
-            item.setCicontent(checkitem.getCicontent());
-            item.setMeaning(checkitem.getMeaning());
+            BeanUtils.copyProperties(checkitem, item);
             items.add(item);
         }
-        dto.setItems(items);
-        return dto;
+        return items;
     }
+ public List<Setmeal> listSetmeal() { return listSetmealByType(null); }
 }

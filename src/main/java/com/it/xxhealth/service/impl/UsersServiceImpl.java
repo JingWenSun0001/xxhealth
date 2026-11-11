@@ -3,9 +3,11 @@ package com.it.xxhealth.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.it.xxhealth.entity.Users;
+import com.it.xxhealth.doctor.MobileDoctorSyncService;
 import com.it.xxhealth.service.UsersService;
 import com.it.xxhealth.mapper.UsersMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
 * @author Ljz
@@ -15,6 +17,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
     implements UsersService{
+
+    private final MobileDoctorSyncService mobileDoctorSyncService;
+
+    public UsersServiceImpl(MobileDoctorSyncService mobileDoctorSyncService) {
+        this.mobileDoctorSyncService = mobileDoctorSyncService;
+    }
 
     /**
      * 登录：先按手机号取用户，再比对密码（密码明文存储，与原表设计保持一致）
@@ -49,6 +57,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
      * 注册：手机号已存在则不写入
      */
     @Override
+    @Transactional
     public int saveUsers(Users users) {
         if (users == null || isBlank(users.getUserid())) {
             return 0;
@@ -56,7 +65,11 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if (getByUserid(users.getUserid()) != null) {
             return -1;
         }
-        return baseMapper.insert(users);
+        int rows = baseMapper.insert(users);
+        if (rows > 0) {
+            mobileDoctorSyncService.syncUser(users.getUserid());
+        }
+        return rows;
     }
 
     /**

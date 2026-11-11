@@ -88,7 +88,7 @@ CREATE TABLE orders (
                         userId VARCHAR(11) NOT NULL COMMENT '客户编号',
                         hpId INT NOT NULL COMMENT '所属医院编号',
                         smId INT NOT NULL COMMENT '所属套餐编号',
-                        state INT NOT NULL COMMENT '订单状态 (1:未归档; 2:已归档)',
+                        state INT NOT NULL COMMENT '订单状态 (1:未归档; 2:已归档; 3:已取消)',
                         CONSTRAINT fk_orders_user FOREIGN KEY (userId) REFERENCES users(userId),
                         CONSTRAINT fk_orders_hospital FOREIGN KEY (hpId) REFERENCES hospital(hpId),
                         CONSTRAINT fk_orders_setmeal FOREIGN KEY (smId) REFERENCES setmeal(smId)
@@ -149,6 +149,7 @@ CREATE TABLE doctor (
                         sex INT NOT NULL COMMENT '性别',
                         deptno INT NOT NULL COMMENT '所属科室 (1:检验科; 2:内科; 3:外科)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='医生信息表';
+<<<<<<< HEAD
 -- =============================================
 -- 11. 消息通知表
 -- =============================================
@@ -160,3 +161,5 @@ CREATE TABLE message (
                          isRead INT NOT NULL DEFAULT 0 COMMENT '是否已读 (0:未读; 1:已读)',
                          createTime DATETIME NOT NULL COMMENT '创建时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息通知表';
+=======
+>>>>>>> upstream/master

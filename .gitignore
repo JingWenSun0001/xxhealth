@@ -35,3 +35,4 @@ build/
 ### Frontend ###
 xxhealth-fronted/node_modules/
 xxhealth-fronted/dist/
+mobile-client/.git-backup/
