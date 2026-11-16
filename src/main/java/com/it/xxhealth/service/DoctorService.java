@@ -18,4 +18,25 @@ public interface DoctorService extends IService<Doctor> {
      */
     Doctor getDoctorByCodeByPass(Doctor doctor);
 
+    /**
+     * 修改医生资料（姓名 / 性别 / 科室）
+     *
+     * @return 影响行数
+     */
+    int updateDoctor(Doctor doctor);
+
+    /**
+     * 修改密码（校验原密码）
+     *
+     * @return 1 成功 / 0 原密码错误或参数不合法
+     */
+    int updatePassword(Integer docid, String oldPassword, String newPassword);
+
+    /**
+     * 医生注册：编码唯一，默认性别男、科室检验科
+     *
+     * @return 1 成功 / -1 编码已存在 / 0 参数不合法
+     */
+    int register(Doctor doctor);
+
 }

@@ -1,0 +1,293 @@
+/* =========================================================
+   熙心健康 · 体检管理系统  全局样式
+   ========================================================= */
+
+:root {
+  --brand: #2f6bff;
+  --brand-dark: #1f56d6;
+  --brand-light: #eaf1ff;
+
+  --sidebar-bg: linear-gradient(180deg, #1d2c44 0%, #16233a 100%);
+  --sidebar-text: #c4d0e3;
+  --sidebar-active: #2f6bff;
+
+  --page-bg: #f4f8ff;
+  --card-bg: #ffffff;
+
+  --text-1: #1f2a3d;
+  --text-2: #5d6b82;
+  --text-3: #93a0b5;
+  --line: #e9eff8;
+
+  --green: #12b76a;
+  --green-bg: #e7f8ef;
+  --red: #f04438;
+  --red-bg: #feecea;
+  --orange: #f79009;
+  --orange-bg: #fff4e5;
+  --purple: #7a5af8;
+  --purple-bg: #f1edff;
+
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-card: 0 8px 28px rgba(31, 58, 110, 0.07);
+  --shadow-hover: 0 14px 38px rgba(47, 107, 255, 0.14);
+
+  /* Element Plus 主题色 */
+  --el-color-primary: #2f6bff;
+  --el-color-primary-light-3: #6b96ff;
+  --el-color-primary-light-5: #97b6ff;
+  --el-color-primary-light-7: #c3d5ff;
+  --el-color-primary-light-8: #dbe6ff;
+  --el-color-primary-light-9: #eef3ff;
+  --el-color-primary-dark-2: #1f56d6;
+  --el-border-radius-base: 10px;
+  --el-font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-1);
+  background: var(--page-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cfdaeb;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b7c6de;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- 通用卡片 ---------- */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(233, 239, 248, 0.9);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+/* ---------- 页面头部横幅 ---------- */
+.page-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  background: linear-gradient(115deg, #2f6bff 0%, #4f8bff 55%, #7fb0ff 100%);
+  color: #fff;
+  box-shadow: 0 14px 34px rgba(47, 107, 255, 0.28);
+}
+
+.page-banner::before,
+.page-banner::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.page-banner::before {
+  width: 220px;
+  height: 220px;
+  right: 80px;
+  top: -110px;
+}
+
+.page-banner::after {
+  width: 140px;
+  height: 140px;
+  right: -40px;
+  bottom: -70px;
+}
+
+.page-banner h2 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.page-banner p {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: 0.88;
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+.banner-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+/* ---------- 状态标签 ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tag-normal {
+  color: var(--green);
+  background: var(--green-bg);
+}
+.tag-error {
+  color: var(--red);
+  background: var(--red-bg);
+}
+.tag-warn {
+  color: var(--orange);
+  background: var(--orange-bg);
+}
+.tag-info {
+  color: var(--brand);
+  background: var(--brand-light);
+}
+.tag-muted {
+  color: var(--text-3);
+  background: #f1f4f9;
+}
+.tag-purple {
+  color: var(--purple);
+  background: var(--purple-bg);
+}
+
+/* ---------- Element Plus 细节统一 ---------- */
+.el-button {
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+
+.el-table {
+  --el-table-border-color: #eff3fa;
+  --el-table-header-bg-color: #f7faff;
+  --el-table-header-text-color: #5d6b82;
+  --el-table-row-hover-bg-color: #f6f9ff;
+  border-radius: 12px;
+}
+
+.el-table th.el-table__cell {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.el-dialog {
+  border-radius: 18px;
+}
+
+/* ---------- 页面进入动画 ---------- */
+.fade-slide-enter-active {
+  transition: all 0.28s ease;
+}
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* ---------- 打印报告 ---------- */
+@media print {
+  .sidebar,
+  .topbar,
+  .no-print,
+  .el-message,
+  .el-overlay {
+    display: none !important;
+  }
+  .layout {
+    display: block !important;
+    min-width: 0 !important;
+    height: auto !important;
+  }
+  .main {
+    display: block !important;
+  }
+  .content {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #e5e9f2 !important;
+    break-inside: avoid;
+  }
+  .detail-grid {
+    display: block !important;
+  }
+}

@@ -1,6 +1,7 @@
 package com.it.xxhealth.controller;
 
 import com.it.xxhealth.common.Result;
+import com.it.xxhealth.dto.PasswordDto;
 import com.it.xxhealth.entity.Doctor;
 import com.it.xxhealth.service.DoctorService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,5 +34,53 @@ public class DoctorController {
             return Result.error(401, "医生编码或密码错误");
         }
         return Result.success(loginDoctor);
+    }
+
+    /**
+     * 修改医生资料（姓名 / 性别 / 科室）
+     */
+    @PostMapping("/updateDoctor")
+    public Result<Integer> updateDoctor(@RequestBody Doctor doctor) {
+        if (doctor == null || doctor.getDocid() == null) {
+            return Result.error(400, "医生编号不能为空");
+        }
+        int rows = doctorService.updateDoctor(doctor);
+        if (rows <= 0) {
+            return Result.error(500, "资料更新失败");
+        }
+        return Result.success(rows);
+    }
+
+    /**
+     * 修改密码（校验原密码）
+     */
+    @PostMapping("/updatePassword")
+    public Result<Integer> updatePassword(@RequestBody PasswordDto dto) {
+        if (dto == null || dto.getDocid() == null) {
+            return Result.error(400, "医生编号不能为空");
+        }
+        int rows = doctorService.updatePassword(dto.getDocid(), dto.getOldPassword(), dto.getNewPassword());
+        if (rows <= 0) {
+            return Result.error(400, "原密码不正确，或新密码不符合要求");
+        }
+        return Result.success(rows);
+    }
+
+    /**
+     * 医生注册
+     */
+    @PostMapping("/register")
+    public Result<Integer> register(@RequestBody Doctor doctor) {
+        if (doctor == null) {
+            return Result.error(400, "注册信息不能为空");
+        }
+        int rows = doctorService.register(doctor);
+        if (rows == -1) {
+            return Result.error(400, "用户名已被注册，请更换");
+        }
+        if (rows <= 0) {
+            return Result.error(400, "请检查用户名、姓名、手机号或密码格式");
+        }
+        return Result.success(rows);
     }
 }
