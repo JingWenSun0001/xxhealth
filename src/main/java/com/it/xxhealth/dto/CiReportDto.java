@@ -8,14 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 体检报告检查项（含检查项明细）返回对象。
- * <p>
- * 与 {@link com.it.xxhealth.entity.Cireport} 相比，额外携带该检查项下挂的明细列表，
- * 用于 {@code ciReport/listCiReport} 接口一次性返回"检查项 + 明细"的树形结构。
- * </p>
+ * 报告检查项及检查结果明细的数据传输对象。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @Data
 public class CiReportDto implements Serializable {
+    /**
+     * 序列化版本号。
+     */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -42,5 +46,9 @@ public class CiReportDto implements Serializable {
      * 该检查项下的明细列表
      */
     private List<Cidetailedreport> cidetailedreports = new ArrayList<>();
+ /**
+  * 根据查询条件获取指定业务数据。
+  * @return 符合条件的数据集合
+  */
  public List<Cidetailedreport> getDetails() { return cidetailedreports; }
 }

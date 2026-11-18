@@ -4,8 +4,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Web MVC 配置类，集中配置接口跨域访问规则。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    /**
+     * 注册后端接口的跨域访问规则。
+     * @param registry Spring MVC 跨域配置注册器
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         /*

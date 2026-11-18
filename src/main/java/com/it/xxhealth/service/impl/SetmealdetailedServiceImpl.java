@@ -7,10 +7,13 @@ import com.it.xxhealth.mapper.SetmealdetailedMapper;
 import org.springframework.stereotype.Service;
 
 /**
-* @author Ljz
-* @description 针对表【setmealdetailed(体检套餐项目明细表)】的数据库操作Service实现
-* @createDate 2026-11-04 09:47:06
-*/
+ * 套餐检查项目关联业务实现。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 @Service
 public class SetmealdetailedServiceImpl extends ServiceImpl<SetmealdetailedMapper, Setmealdetailed>
     implements SetmealdetailedService{

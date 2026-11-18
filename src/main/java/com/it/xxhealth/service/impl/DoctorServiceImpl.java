@@ -8,16 +8,21 @@ import com.it.xxhealth.mapper.DoctorMapper;
 import org.springframework.stereotype.Service;
 
 /**
-* @author Ljz
-* @description 针对表【doctor(医生信息表)】的数据库操作Service实现
-* @createDate 2026-11-04 09:47:06
-*/
+ * 医生账号业务实现。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 @Service
 public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor>
     implements DoctorService{
 
     /**
      * 根据医生编码 + 密码查询医生信息（登录校验）。
+     * @param doctor 医生登录信息
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @Override
     public Doctor getDoctorByCodeByPass(Doctor doctor) {

@@ -17,19 +17,45 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Service;
 
-/** Read model tailored for the patient mobile client. */
+/**
+ * 移动用户工作区查询服务，组合旧用户数据与医生端业务数据。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 @Service
 public class MobileWorkspaceService {
+    /**
+     * 执行参数化 SQL 和事务内数据库操作的 JdbcTemplate。
+     */
     private final JdbcTemplate db;
+    /**
+     * 负责 Java 对象与 JSON 字符串互转的序列化组件。
+     */
     private final ObjectMapper json;
+    /**
+     * 预约订单业务服务。
+     */
     private final OrdersService ordersService;
 
+    /**
+     * 创建 MobileWorkspaceService 实例并注入所需依赖。
+     * @param db 数据库访问组件
+     * @param json JSON 序列化组件
+     * @param ordersService ordersService 参数
+     */
     public MobileWorkspaceService(JdbcTemplate db, ObjectMapper json, OrdersService ordersService) {
         this.db = db;
         this.json = json;
         this.ordersService = ordersService;
     }
 
+    /**
+     * 查询当前可见的体检套餐，并按筛选条件返回分页或移动端列表。
+     * @return 符合条件的数据集合
+     */
     public List<Map<String, Object>> packages() {
         List<Map<String, Object>> packages = rows(
                 "SELECT id package_id,name,category,audience,gender,price,original_price,features,items,picture "
@@ -41,6 +67,12 @@ public class MobileWorkspaceService {
         return packages;
     }
 
+    /**
+     * 查询指定的已上架体检套餐详情。
+     * @param packageId 医生端套餐编号
+     * @return 包含查询结果或业务状态的键值数据
+     * @throws IllegalArgumentException 当参数格式错误、记录不存在或不满足业务规则时抛出
+     */
     public Map<String, Object> packageDetail(long packageId) {
         List<Map<String, Object>> found = rows(
                 "SELECT id package_id,name,category,audience,gender,price,original_price,features,items,picture "
@@ -54,6 +86,15 @@ public class MobileWorkspaceService {
         return result;
     }
 
+    /**
+     * 校验用户、机构、套餐适用性和日期后创建移动端预约。
+     * @param userId 用户手机号
+     * @param packageId 医生端套餐编号
+     * @param hospitalId 体检机构编号
+     * @param orderDate orderDate 参数
+     * @return 包含查询结果或业务状态的键值数据
+     * @throws IllegalArgumentException 当参数格式错误、记录不存在或不满足业务规则时抛出
+     */
     public Map<String, Object> book(String userId, long packageId, int hospitalId, String orderDate) {
         requiredUser(userId);
         LocalDate.parse(orderDate);
@@ -96,6 +137,11 @@ public class MobileWorkspaceService {
         return response;
     }
 
+    /**
+     * 按患者、状态、套餐和日期分页查询医生端预约。
+     * @param userId 用户手机号
+     * @return 符合条件的数据集合
+     */
     public List<Map<String, Object>> appointments(String userId) {
         requiredUser(userId);
         return rows("SELECT o.orderId order_id,o.orderDate order_date,o.userId user_id,o.hpId hp_id,o.smId sm_id,o.state,"
@@ -110,6 +156,11 @@ public class MobileWorkspaceService {
                 userId);
     }
 
+    /**
+     * 按患者、状态、套餐和日期范围分页查询体检报告。
+     * @param userId 用户手机号
+     * @return 符合条件的数据集合
+     */
     public List<Map<String, Object>> reports(String userId) {
         requiredUser(userId);
         return rows("SELECT r.id report_id,r.report_no report_no,r.exam_date exam_date,r.package_name package_name,"
@@ -122,6 +173,13 @@ public class MobileWorkspaceService {
                 userId);
     }
 
+    /**
+     * 查询报告详情、检查结果和患者历史报告。
+     * @param userId 用户手机号
+     * @param reportId 体检报告编号
+     * @return 包含查询结果或业务状态的键值数据
+     * @throws IllegalArgumentException 当参数格式错误、记录不存在或不满足业务规则时抛出
+     */
     public Map<String, Object> report(String userId, long reportId) {
         requiredUser(userId);
         List<Map<String, Object>> found = rows(
@@ -139,6 +197,11 @@ public class MobileWorkspaceService {
         return result;
     }
 
+    /**
+     * 汇总用户的预约、报告、异常数量和下一次预约。
+     * @param userId 用户手机号
+     * @return 包含查询结果或业务状态的键值数据
+     */
     public Map<String, Object> summary(String userId) {
         List<Map<String, Object>> appointmentList = appointments(userId);
         List<Map<String, Object>> reportList = reports(userId);
@@ -155,6 +218,11 @@ public class MobileWorkspaceService {
         return result;
     }
 
+    /**
+     * 聚合用户的预约状态和报告发布事件，生成时间倒序消息。
+     * @param userId 用户手机号
+     * @return 符合条件的数据集合
+     */
     public List<Map<String, Object>> messages(String userId) {
         List<Map<String, Object>> messages = new ArrayList<>();
         for (Map<String, Object> appointment : appointments(userId)) {
@@ -180,9 +248,17 @@ public class MobileWorkspaceService {
         return messages;
     }
 
+    /**
+     * 执行 requiredUser 对应的业务处理。
+     * @param userId 用户手机号
+     * @throws IllegalArgumentException 当参数格式错误、记录不存在或不满足业务规则时抛出
+     */
     private void requiredUser(String userId) {
-        if (userId == null || !userId.matches("1[3-9]\\d{9}")) {
-            throw new IllegalArgumentException("用户手机号格式错误");
+        // 账号注册与旧版用户表都以“11 位数字”作为用户编号。这里不能额外
+        // 限制号段，否则数据库中已有的演示账号（如 12300000000）可以登录，
+        // 却会在预约、报告和消息接口中被错误拒绝。
+        if (userId == null || !userId.matches("\\d{11}")) {
+            throw new IllegalArgumentException("用户编号格式错误");
         }
         Long count = db.queryForObject("SELECT COUNT(*) FROM users WHERE userId=?", Long.class, userId);
         if (count == null || count == 0) {
@@ -190,6 +266,12 @@ public class MobileWorkspaceService {
         }
     }
 
+    /**
+     * 执行参数化查询，并将结果集转换为驼峰命名的键值集合。
+     * @param sql 包含占位符的 SQL 语句
+     * @param args 应用启动参数或 SQL 绑定参数
+     * @return 符合条件的数据集合
+     */
     private List<Map<String, Object>> rows(String sql, Object... args) {
         return db.query(sql, (rs, rowNum) -> {
             Map<String, Object> row = new LinkedHashMap<>();
@@ -205,6 +287,12 @@ public class MobileWorkspaceService {
         }, args);
     }
 
+    /**
+     * 解析报告检查项目 JSON。
+     * @param value 待转换或校验的输入值
+     * @return 符合条件的数据集合
+     * @throws IllegalArgumentException 当参数格式错误、记录不存在或不满足业务规则时抛出
+     */
     private List<Map<String, Object>> decodeItems(Object value) {
         try {
             return json.readValue(String.valueOf(value), new TypeReference<List<Map<String, Object>>>() { });
@@ -213,6 +301,11 @@ public class MobileWorkspaceService {
         }
     }
 
+    /**
+     * 解析套餐标签或项目 JSON 数组。
+     * @param value 待转换或校验的输入值
+     * @return 符合条件的数据集合
+     */
     private List<Object> decodeList(Object value) {
         try {
             return json.readValue(String.valueOf(value), new TypeReference<List<Object>>() { });
@@ -221,6 +314,11 @@ public class MobileWorkspaceService {
         }
     }
 
+    /**
+     * 将输入值转换为整数，并提供统一的格式错误提示。
+     * @param value 待转换或校验的输入值
+     * @return 处理结果数值
+     */
     private long number(Object value) {
         return value == null ? 0 : Long.parseLong(value.toString());
     }

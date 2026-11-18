@@ -5,23 +5,26 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * 医院信息表 Service
+ * 体检机构业务接口。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 public interface HospitalService extends IService<Hospital> {
 
     /**
-     * 医院列表
-     *
-     * @param state 医院状态：1 正常 / 2 其他；传 null 查全部
-     * @return 医院列表，无数据时返回空集合
+     * 按营业状态查询体检机构列表。
+     * @param state 目标业务状态
+     * @return 符合条件的数据集合
      */
     List<Hospital> listHospital(Integer state);
 
     /**
-     * 医院详情
-     *
-     * @param hpid 医院编号
-     * @return 医院对象，不存在时返回 null
+     * 根据机构编号查询体检机构详情。
+     * @param hpid 体检机构编号
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     Hospital getHospitalById(Integer hpid);
 }

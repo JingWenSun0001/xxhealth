@@ -4,20 +4,33 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 全局统一返回结果类
- * @param <T> 响应数据的类型
+ * 后端接口统一响应对象，封装业务状态码、提示信息和响应数据。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @Data
 public class Result<T> implements Serializable {
+    /**
+     * 序列化版本号。
+     */
     private static final long serialVersionUID = 1L;
 
-    // 状态码 (例如：200 成功, 500 失败)
+    /**
+     * 业务状态码。
+     */
     private int code;
 
-    // 提示信息
+    /**
+     * 面向调用方的结果说明。
+     */
     private String message;
 
-    // 返回的数据
+    /**
+     * 接口返回的业务数据。
+     */
     private T data;
 
     /**
@@ -26,7 +39,8 @@ public class Result<T> implements Serializable {
     private Result() {}
 
     /**
-     * 成功返回（无数据）
+     * 构造操作成功的统一响应。
+     * @return 方法处理结果
      */
     public static <T> Result<T> success() {
         Result<T> result = new Result<>();
@@ -36,7 +50,9 @@ public class Result<T> implements Serializable {
     }
 
     /**
-     * 成功返回（带数据）
+     * 构造操作成功的统一响应。
+     * @param data 需要返回的业务数据
+     * @return 方法处理结果
      */
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
@@ -47,14 +63,19 @@ public class Result<T> implements Serializable {
     }
 
     /**
-     * 失败返回（默认错误码 500）
+     * 构造操作失败的统一响应。
+     * @param message 面向调用方的提示信息
+     * @return 方法处理结果
      */
     public static <T> Result<T> error(String message) {
         return error(500, message);
     }
 
     /**
-     * 失败返回（自定义错误码和提示）
+     * 构造操作失败的统一响应。
+     * @param code 业务状态码
+     * @param message 面向调用方的提示信息
+     * @return 方法处理结果
      */
     public static <T> Result<T> error(int code, String message) {
         Result<T> result = new Result<>();

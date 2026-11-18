@@ -6,8 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 检查项明细表
- * @TableName checkitemdetailed
+ * 检查项目明细实体，对应 checkitemdetailed 表。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @TableName(value ="checkitemdetailed")
 @Data
@@ -63,6 +67,11 @@ public class Checkitemdetailed {
      */
     private String remarks;
 
+    /**
+     * 比较当前对象与目标对象的业务字段是否相等。
+     * @param that 待比较的目标对象
+     * @return 两个对象的业务字段相等时返回 true，否则返回 false
+     */
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -87,6 +96,10 @@ public class Checkitemdetailed {
             && (this.getRemarks() == null ? other.getRemarks() == null : this.getRemarks().equals(other.getRemarks()));
     }
 
+    /**
+     * 根据业务字段计算对象哈希值。
+     * @return 当前对象的哈希值
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -104,6 +117,10 @@ public class Checkitemdetailed {
         return result;
     }
 
+    /**
+     * 生成便于日志和调试查看的对象字符串。
+     * @return 包含主要字段的对象描述文本
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

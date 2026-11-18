@@ -4,11 +4,13 @@ import com.it.xxhealth.entity.Overallresult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
-* @author Ljz
-* @description 针对表【overallresult(总检结论信息表)】的数据库操作Mapper
-* @createDate 2026-11-04 09:47:06
-* @Entity generator.domain.Overallresult
-*/
+ * 总检结论数据访问接口。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 public interface OverallresultMapper extends BaseMapper<Overallresult> {
 
 }

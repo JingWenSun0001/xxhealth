@@ -10,20 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
-* @author Ljz
-* @description 针对表【cidetailedreport(体检报告检查项明细表)】的数据库操作Service实现
-* @createDate 2026-11-04 09:47:06
-*/
+ * 报告检查结果明细业务实现。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 @Service
 public class CidetailedreportServiceImpl extends ServiceImpl<CidetailedreportMapper, Cidetailedreport>
     implements CidetailedreportService{
 
     /**
-     * 批量更新检查项明细的检查结果与异常标记。
-     * <p>
-     * 只更新 value 与 iserror 两个可编辑字段，其余模板字段（名称、单位、参考范围等）保持不变；
-     * MyBatis-Plus 的 updateById 默认忽略 null 字段，因此前端未传的字段不会被覆盖。
-     * </p>
+     * 在同一事务中批量更新检查结果和异常标记。
+     * @param cidetailedreports 待更新的报告检查结果集合
+     * @return 处理结果数值
      */
     @Override
     @Transactional(rollbackFor = Exception.class)

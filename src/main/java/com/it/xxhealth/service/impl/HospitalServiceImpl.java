@@ -9,14 +9,21 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
- * 医院信息表 Service 实现
+ * 体检机构业务实现。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @Service
 public class HospitalServiceImpl extends ServiceImpl<HospitalMapper, Hospital>
     implements HospitalService {
 
     /**
-     * 医院列表：state 为 null 时查全部
+     * 按营业状态查询体检机构列表。
+     * @param state 目标业务状态
+     * @return 符合条件的数据集合
      */
     @Override
     public List<Hospital> listHospital(Integer state) {
@@ -29,7 +36,9 @@ public class HospitalServiceImpl extends ServiceImpl<HospitalMapper, Hospital>
     }
 
     /**
-     * 医院详情：不存在返回 null
+     * 根据机构编号查询体检机构详情。
+     * @param hpid 体检机构编号
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @Override
     public Hospital getHospitalById(Integer hpid) {

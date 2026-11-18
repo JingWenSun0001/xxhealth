@@ -4,10 +4,13 @@ import com.it.xxhealth.entity.Checkitem;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
-* @author Ljz
-* @description 针对表【checkitem(检查项信息表)】的数据库操作Service
-* @createDate 2026-11-04 09:47:06
-*/
+ * 检查项目业务接口。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 public interface CheckitemService extends IService<Checkitem> {
 
 }

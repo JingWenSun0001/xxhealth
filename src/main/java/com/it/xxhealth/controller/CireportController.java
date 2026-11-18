@@ -14,20 +14,27 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 医生端：体检报告检查项接口
+ * 体检报告检查项接口，负责生成报告项目并查询检查明细。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @RestController
 @RequestMapping("/ciReport")
 public class CireportController {
 
+    /**
+     * 报告检查项目业务服务。
+     */
     @Resource
     private CireportService cireportService;
 
     /**
-     * 根据预约订单信息创建体检报告模板
-     *
-     * @param orders 预约订单对象（只需 orderid）
-     * @return 本次创建的检查项数量
+     * 根据订单套餐复制检查项和明细，生成报告录入模板。
+     * @param orders 预约订单数据
+     * @return 保存、更新或同步后的业务结果
      */
     @PostMapping("/createReportTemplate")
     public Result<Integer> createReportTemplate(@RequestBody Orders orders) {
@@ -36,10 +43,9 @@ public class CireportController {
     }
 
     /**
-     * 根据体检预约编号查询检查项列表及明细信息
-     *
-     * @param cireport 检查项报告对象（只需 orderid）
-     * @return 检查项（含明细）列表
+     * 查询指定订单的报告检查项目及结果明细。
+     * @param cireport 报告检查项目查询条件
+     * @return 符合条件的数据集合
      */
     @PostMapping("/listCiReport")
     public List<CiReportDto> listCiReport(@RequestBody Cireport cireport) {

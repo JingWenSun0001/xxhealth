@@ -6,24 +6,31 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * 体检套餐信息表 Service
+ * 体检套餐业务接口。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 public interface SetmealService extends IService<Setmeal> {
 
     /**
-     * 按类型查套餐
-     *
-     * @param type 套餐类型：1 男士 / 0 女士；传 null 查全部
-     * @return 套餐列表，无数据时返回空集合
+     * 按适用性别查询体检套餐。
+     * @param type type 参数
+     * @return 符合条件的数据集合
      */
     List<Setmeal> listSetmealByType(Integer type);
 
     /**
-     * 套餐详情（含套餐内的检查项）
-     *
-     * @param smid 套餐编号
-     * @return 套餐详情，套餐不存在时返回 null
+     * 根据套餐编号查询套餐及检查项目详情。
+     * @param smid 体检套餐编号
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     SetmealDto getSetmealById(Integer smid);
+ /**
+  * 查询全部体检套餐及其检查项目。
+  * @return 符合条件的数据集合
+  */
  List<Setmeal> listSetmeal();
 }

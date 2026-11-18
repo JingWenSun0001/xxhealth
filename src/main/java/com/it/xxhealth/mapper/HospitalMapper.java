@@ -4,11 +4,13 @@ import com.it.xxhealth.entity.Hospital;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
-* @author Ljz
-* @description 针对表【hospital(医院信息表)】的数据库操作Mapper
-* @createDate 2026-11-04 09:47:06
-* @Entity generator.domain.Hospital
-*/
+ * 体检机构数据访问接口。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 public interface HospitalMapper extends BaseMapper<Hospital> {
 
 }

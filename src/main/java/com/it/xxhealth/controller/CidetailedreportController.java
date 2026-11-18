@@ -12,20 +12,27 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 医生端：体检报告检查项明细接口
+ * 体检报告明细接口，负责批量保存检查结果和异常标记。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @RestController
 @RequestMapping("/ciDetailedReport")
 public class CidetailedreportController {
 
+    /**
+     * 报告检查明细业务服务。
+     */
     @Resource
     private CidetailedreportService cidetailedreportService;
 
     /**
-     * 更新检查项信息及检查项明细信息
-     *
-     * @param cidetailedreports 检查项明细列表（JSON 数组）
-     * @return 实际更新的记录数
+     * 在同一事务中批量更新检查结果和异常标记。
+     * @param cidetailedreports 待更新的报告检查结果集合
+     * @return 保存、更新或同步后的业务结果
      */
     @PostMapping("/updateCiDetailedReport")
     public Result<Integer> updateCiDetailedReport(@RequestBody List<Cidetailedreport> cidetailedreports) {

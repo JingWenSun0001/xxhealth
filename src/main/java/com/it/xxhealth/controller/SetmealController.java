@@ -11,25 +11,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户端 - 体检套餐接口（列表 / 详情）
- * <p>
- * 按文档口径：成功返回裸对象，失败返回 null 或空集合，不再包 Result。
- * 完整路径带 context-path：/tijian/setmeal/...
+ * 用户端体检套餐接口，提供套餐筛选和详情查询功能。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @RestController
 @RequestMapping("/setmeal")
 public class SetmealController {
 
+    /**
+     * 体检套餐业务服务。
+     */
     @Autowired
     private SetmealService setmealService;
 
+    /**
+     * 查询全部体检套餐及其检查项目。
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
+     */
     @PostMapping("/listSetmeal")
     public com.it.xxhealth.common.Result<List<Setmeal>> listSetmeal() {
         return com.it.xxhealth.common.Result.success(setmealService.listSetmeal());
     }
 
     /**
-     * 按类型查套餐：type 传 1 男士 / 0 女士，传 null 查全部
+     * 按适用性别查询体检套餐。
+     * @param setmeal 体检套餐查询条件
+     * @return 符合条件的数据集合
      */
     @PostMapping("/listSetmealByType")
     public List<Setmeal> listSetmealByType(@RequestBody(required = false) Setmeal setmeal) {
@@ -38,7 +49,9 @@ public class SetmealController {
     }
 
     /**
-     * 套餐详情：返回套餐信息 + items 检查项列表，套餐不存在返回 null
+     * 根据套餐编号查询套餐及检查项目详情。
+     * @param setmeal 体检套餐查询条件
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @PostMapping("/getSetmealById")
     public SetmealDto getSetmealById(@RequestBody Setmeal setmeal) {

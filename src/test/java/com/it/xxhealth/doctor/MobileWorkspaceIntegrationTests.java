@@ -111,4 +111,35 @@ class MobileWorkspaceIntegrationTests {
                 "SELECT package_name FROM doctor_appointment WHERE appointment_no=CONCAT('MOB',LPAD(?,10,'0'))",
                 String.class, result.get("orderId")));
     }
+
+    @Test
+    void legacyElevenDigitUserIdCanBookFromMobile() {
+        String suffix = String.valueOf(Math.abs(UUID.randomUUID().hashCode()));
+        suffix = ("0000000000" + suffix).substring(("0000000000" + suffix).length() - 10);
+        String userId = "1" + suffix;
+        // 保证覆盖不属于 13-19 手机号段、但符合系统既有 11 位用户编号规则的账号。
+        userId = "12" + userId.substring(2);
+
+        Users user = new Users();
+        user.setUserid(userId);
+        user.setPassword("123456");
+        user.setRealname("旧版账号预约患者");
+        user.setSex(1);
+        user.setIdentitycard("21010219900101" + suffix.substring(0, 3) + "X");
+        user.setBirthday(Date.valueOf("1990-01-01"));
+        user.setUsertype(1);
+        assertEquals(1, usersService.saveUsers(user));
+
+        Map<String, Object> selected = mobileWorkspace.packages().stream()
+                .filter(item -> "全部".equals(item.get("gender")) || "男".equals(item.get("gender")))
+                .findFirst().orElseThrow(AssertionError::new);
+        Integer hospitalId = db.queryForObject(
+                "SELECT hpId FROM hospital WHERE state=1 ORDER BY hpId LIMIT 1", Integer.class);
+
+        Map<String, Object> result = mobileWorkspace.book(userId,
+                ((Number) selected.get("packageId")).longValue(), hospitalId,
+                LocalDate.now().plusDays(2).toString());
+
+        assertEquals(1, result.get("result"));
+    }
 }

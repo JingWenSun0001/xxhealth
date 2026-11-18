@@ -15,24 +15,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Keeps the legacy mobile tables (users/orders) and the doctor workspace tables
- * in one business flow. Mobile writes remain the source of truth for patient
- * identity and mobile appointment state.
+ * 用户端到医生端的数据同步服务，将账号和订单映射为患者、预约与日程。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @Service
 public class MobileDoctorSyncService {
+    /**
+     * 用户端预约同步到医生端时使用的预约编号前缀。
+     */
     private static final String MOBILE_APPOINTMENT_PREFIX = "MOB";
 
+    /**
+     * 执行参数化 SQL 和事务内数据库操作的 JdbcTemplate。
+     */
     private final JdbcTemplate db;
+    /**
+     * 负责 Java 对象与 JSON 字符串互转的序列化组件。
+     */
     private final ObjectMapper json;
+    /**
+     * 医生端套餐、日程、通知和设置业务服务。
+     */
     private final DoctorOperationsService operations;
 
+    /**
+     * 创建 MobileDoctorSyncService 实例并注入所需依赖。
+     * @param db 数据库访问组件
+     * @param json JSON 序列化组件
+     * @param operations 医生端运营业务服务
+     */
     public MobileDoctorSyncService(JdbcTemplate db, ObjectMapper json, DoctorOperationsService operations) {
         this.db = db;
         this.json = json;
         this.operations = operations;
     }
 
+    /**
+     * 把用户账号同步为医生端患者档案，并返回患者编号。
+     * @param userId 用户手机号
+     * @return 处理结果数值
+     */
     @Transactional
     public long syncUser(String userId) {
         Map<String, Object> user = requiredRow(
@@ -62,6 +88,11 @@ public class MobileDoctorSyncService {
         return patientId;
     }
 
+    /**
+     * 把用户预约订单同步为医生端预约及日程。
+     * @param orderId 用户端订单编号
+     * @return 处理结果数值
+     */
     @Transactional
     public long syncOrder(Integer orderId) {
         Map<String, Object> order = requiredRow(
@@ -99,6 +130,10 @@ public class MobileDoctorSyncService {
         return appointmentId;
     }
 
+    /**
+     * 补同步全部用户端历史订单。
+     * @return 处理结果数值
+     */
     @Transactional
     public int syncAllOrders() {
         List<Integer> ids = db.query("SELECT orderId FROM orders ORDER BY orderId",
@@ -109,6 +144,10 @@ public class MobileDoctorSyncService {
         return ids.size();
     }
 
+    /**
+     * 将用户取消操作同步到医生端预约和日程。
+     * @param orderId 用户端订单编号
+     */
     @Transactional
     public void cancelOrder(Integer orderId) {
         List<Long> ids = db.query("SELECT id FROM doctor_appointment WHERE appointment_no=?",
@@ -122,6 +161,11 @@ public class MobileDoctorSyncService {
         operations.appointmentNotification(appointmentId, "手机端取消预约");
     }
 
+    /**
+     * 根据排班规则寻找指定日期的首个可用时段。
+     * @param examDate examDate 参数
+     * @return 方法处理结果
+     */
     private String firstAvailableSlot(String examDate) {
         Map<String, Object> settings = requiredRow(
                 "SELECT preferences,rules FROM doctor_settings WHERE id=1");
@@ -147,6 +191,13 @@ public class MobileDoctorSyncService {
         return slots.isEmpty() ? "08:00–08:30" : slots.get(0);
     }
 
+    /**
+     * 按照时段长度生成连续的可预约时间段。
+     * @param slots slots 参数
+     * @param startText startText 参数
+     * @param endText endText 参数
+     * @param minutes 单个时段长度，单位为分钟
+     */
     private void addSlots(List<String> slots, String startText, String endText, int minutes) {
         LocalTime cursor = LocalTime.parse(startText);
         LocalTime end = LocalTime.parse(endText);
@@ -157,6 +208,13 @@ public class MobileDoctorSyncService {
         }
     }
 
+    /**
+     * 执行查询并保证至少存在一条结果。
+     * @param sql 包含占位符的 SQL 语句
+     * @param args 应用启动参数或 SQL 绑定参数
+     * @return 包含查询结果或业务状态的键值数据
+     * @throws IllegalArgumentException 当参数格式错误、记录不存在或不满足业务规则时抛出
+     */
     private Map<String, Object> requiredRow(String sql, Object... args) {
         List<Map<String, Object>> rows = db.queryForList(sql, args);
         if (rows.isEmpty()) {
@@ -165,6 +223,11 @@ public class MobileDoctorSyncService {
         return rows.get(0);
     }
 
+    /**
+     * 将数据库中的 JSON 内容反序列化为 Java 对象。
+     * @param value 待转换或校验的输入值
+     * @return 包含查询结果或业务状态的键值数据
+     */
     private Map<String, Object> decode(Object value) {
         try {
             return json.readValue(text(value), new TypeReference<Map<String, Object>>() { });
@@ -173,10 +236,20 @@ public class MobileDoctorSyncService {
         }
     }
 
+    /**
+     * 根据用户端订单编号生成稳定的医生端预约编号。
+     * @param orderId 用户端订单编号
+     * @return 方法处理结果
+     */
     private String appointmentNo(Integer orderId) {
         return MOBILE_APPOINTMENT_PREFIX + String.format("%010d", orderId);
     }
 
+    /**
+     * 将预约状态转换为对应的日程状态。
+     * @param appointmentStatus appointmentStatus 参数
+     * @return 方法处理结果
+     */
     private String scheduleStatus(String appointmentStatus) {
         if ("已完成".equals(appointmentStatus)) {
             return "已完成";
@@ -187,10 +260,20 @@ public class MobileDoctorSyncService {
         return "已预约";
     }
 
+    /**
+     * 将输入值转换为整数，并提供统一的格式错误提示。
+     * @param value 待转换或校验的输入值
+     * @return 处理结果数值
+     */
     private int number(Object value) {
         return Integer.parseInt(String.valueOf(value));
     }
 
+    /**
+     * 读取键值并转换为去除首尾空白的文本。
+     * @param value 待转换或校验的输入值
+     * @return 方法处理结果
+     */
     private String text(Object value) {
         return value == null ? "" : value.toString().trim();
     }

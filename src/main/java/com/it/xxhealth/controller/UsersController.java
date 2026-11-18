@@ -9,20 +9,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户端 - 账号接口（登录 / 手机号查重 / 注册）
- * <p>
- * 按文档口径：成功返回裸对象，失败返回 null 或 0，不再包 Result。
- * 完整路径带 context-path：/tijian/users/...
+ * 用户账号接口，提供登录、账号查询和注册功能。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @RestController
 @RequestMapping("/users")
 public class UsersController {
 
+    /**
+     * 用户账号业务服务。
+     */
     @Autowired
     private UsersService usersService;
 
     /**
-     * 登录：手机号 + 密码，成功返回用户对象，账号或密码错误返回 null
+     * 根据手机号和密码校验用户登录信息。
+     * @param users 用户账号数据
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @PostMapping("/getUsersByUserIdByPass")
     public Users getUsersByUserIdByPass(@RequestBody Users users) {
@@ -33,7 +40,9 @@ public class UsersController {
     }
 
     /**
-     * 手机号查重：返回该用户对象，未注册返回 null
+     * 根据手机号查询用户账号。
+     * @param users 用户账号数据
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @PostMapping("/getUsersById")
     public Users getUsersById(@RequestBody Users users) {
@@ -44,7 +53,9 @@ public class UsersController {
     }
 
     /**
-     * 注册：返回 1 成功，0 手机号已存在或参数不合法
+     * 校验并注册用户，同时同步医生端患者档案。
+     * @param users 用户账号数据
+     * @return 处理结果数值
      */
     @PostMapping("/saveUsers")
     public int saveUsers(@RequestBody Users users) {
@@ -70,6 +81,11 @@ public class UsersController {
         return rows > 0 ? 1 : 0;
     }
 
+    /**
+     * 执行 isBlank 对应的业务处理。
+     * @param text text 参数
+     * @return 条件成立时返回 true，否则返回 false
+     */
     private boolean isBlank(String text) {
         return text == null || text.trim().isEmpty();
     }

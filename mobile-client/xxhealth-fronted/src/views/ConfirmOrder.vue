@@ -101,7 +101,8 @@ export default {
           window.alert('预约失败，请稍后重试')
         }
       } catch (e) {
-        window.alert('预约失败，请稍后重试')
+        const message = e && e.response && e.response.data && e.response.data.message
+        window.alert(message || '预约失败，请稍后重试')
       } finally {
         this.submitting = false
       }

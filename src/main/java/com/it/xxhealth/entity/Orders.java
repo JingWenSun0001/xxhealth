@@ -9,8 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 体检预约订单表
- * @TableName orders
+ * 用户预约订单实体，对应 orders 表。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @TableName(value ="orders")
 @Data
@@ -54,12 +58,23 @@ public class Orders {
     @TableField(exist = false)
     private Users users;
 
+    /**
+     * 订单关联的体检机构信息。
+     */
     @TableField(exist = false)
     private Hospital hospital;
 
+    /**
+     * 订单关联的体检套餐信息。
+     */
     @TableField(exist = false)
     private Setmeal setmeal;
 
+    /**
+     * 比较当前对象与目标对象的业务字段是否相等。
+     * @param that 待比较的目标对象
+     * @return 两个对象的业务字段相等时返回 true，否则返回 false
+     */
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -80,6 +95,10 @@ public class Orders {
             && (this.getState() == null ? other.getState() == null : this.getState().equals(other.getState()));
     }
 
+    /**
+     * 根据业务字段计算对象哈希值。
+     * @return 当前对象的哈希值
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -93,6 +112,10 @@ public class Orders {
         return result;
     }
 
+    /**
+     * 生成便于日志和调试查看的对象字符串。
+     * @return 包含主要字段的对象描述文本
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

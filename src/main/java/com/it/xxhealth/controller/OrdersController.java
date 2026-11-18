@@ -12,21 +12,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户端 - 预约订单接口（按文档命名）
+ * 用户端预约订单接口，负责编排预约查询、创建、取消和归档操作。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @RestController
 @RequestMapping("/orders")
 public class OrdersController {
 
+    /**
+     * 预约订单业务服务。
+     */
     @Autowired
     private OrdersService ordersService;
 
+    /**
+     * 按条件查询用户预约列表或分页结果。
+     * @param request 分页查询参数
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
+     */
     @PostMapping("/listOrders")
     public com.it.xxhealth.common.Result<com.it.xxhealth.dto.OrdersPageResponseDto> listOrders(
             @RequestBody(required=false) com.it.xxhealth.dto.OrdersPageRequestDto request) {
         return com.it.xxhealth.common.Result.success(ordersService.listOrders(request==null?new com.it.xxhealth.dto.OrdersPageRequestDto():request));
     }
 
+    /**
+     * 更新用户预约归档状态并同步医生端。
+     * @param orders 预约订单数据
+     * @return 保存、更新或同步后的业务结果
+     */
     @PostMapping("/updateOrdersState")
     public com.it.xxhealth.common.Result<Integer> updateOrdersState(@RequestBody Orders orders) {
         if(orders.getOrderid()==null||orders.getState()==null||(orders.getState()!=1&&orders.getState()!=2))
@@ -36,6 +54,8 @@ public class OrdersController {
 
     /**
      * 根据手机号查询是否有未归档预约，返回未归档订单数量
+     * @param orders 预约订单数据
+     * @return 处理结果数值
      */
     @PostMapping("/getOrdersByUserId")
     public int getOrdersByUserId(@RequestBody Orders orders) {
@@ -47,6 +67,8 @@ public class OrdersController {
 
     /**
      * 添加体检预约，返回 1 成功；0 重复预约；-2 日期早于今天
+     * @param orders 预约订单数据
+     * @return 处理结果数值
      */
     @PostMapping("/saveOrders")
     public int saveOrders(@RequestBody Orders orders) {
@@ -59,6 +81,8 @@ public class OrdersController {
 
     /**
      * 根据用户编号和订单状态查询预约列表，state 为 null 查全部
+     * @param orders 预约订单数据
+     * @return 符合条件的数据集合
      */
     @PostMapping("/listOrdersByUserId")
     public List<OrdersDto> listOrdersByUserId(@RequestBody Orders orders) {
@@ -70,6 +94,8 @@ public class OrdersController {
 
     /**
      * 根据预约编号删除预约（只能删未归档的），返回 1 成功；-1 已归档；0 不存在
+     * @param orders 预约订单数据
+     * @return 处理结果数值
      */
     @PostMapping("/removeOrders")
     public int removeOrders(@RequestBody Orders orders) {
@@ -81,6 +107,8 @@ public class OrdersController {
 
     /**
      * 根据预约编号查询预约详情
+     * @param orders 预约订单数据
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @PostMapping("/getOrdersById")
     public OrdersDto getOrdersById(@RequestBody Orders orders) {

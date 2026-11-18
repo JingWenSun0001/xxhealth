@@ -4,11 +4,13 @@ import com.it.xxhealth.entity.Cidetailedreport;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
-* @author Ljz
-* @description 针对表【cidetailedreport(体检报告检查项明细表)】的数据库操作Mapper
-* @createDate 2026-11-04 09:47:06
-* @Entity generator.domain.Cidetailedreport
-*/
+ * 报告检查结果明细数据访问接口。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 public interface CidetailedreportMapper extends BaseMapper<Cidetailedreport> {
 
 }

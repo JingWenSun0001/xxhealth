@@ -36,3 +36,19 @@ build/
 xxhealth-fronted/node_modules/
 xxhealth-fronted/dist/
 mobile-client/.git-backup/
+
+# Local processes and logs created by the standalone demo launcher
+.demo-runtime/
+
+# Local verification output and generated presentation material
+.codex-build/
+/output/
+/product-intro-video/
+/health-care-intro.mp4
+/tools/crop-ppt-assets.ps1
+/docs/SYSTEM_DESIGN.md
+/docs/DATA_DICTIONARY.md
+**/screenshots/
+*.ppt
+*.pptx
+*.docx

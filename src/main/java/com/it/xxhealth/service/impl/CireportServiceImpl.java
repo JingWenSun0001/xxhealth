@@ -28,28 +28,50 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 报告检查项 Service 实现
+ * 报告检查项目业务实现。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @Service
 public class CireportServiceImpl extends ServiceImpl<CireportMapper, Cireport> implements CireportService {
 
+    /**
+     * 当前模块的数据访问组件。
+     */
     @Resource
     private OrdersMapper ordersMapper;
 
+    /**
+     * 当前模块的数据访问组件。
+     */
     @Resource
     private SetmealdetailedMapper setmealdetailedMapper;
 
+    /**
+     * 当前模块的数据访问组件。
+     */
     @Resource
     private CheckitemMapper checkitemMapper;
 
+    /**
+     * 当前模块的数据访问组件。
+     */
     @Resource
     private CheckitemdetailedMapper checkitemdetailedMapper;
 
+    /**
+     * 当前模块的数据访问组件。
+     */
     @Resource
     private CidetailedreportMapper cidetailedreportMapper;
 
     /**
-     * 根据预约订单信息创建体检报告模板。
+     * 根据订单套餐复制检查项和明细，生成报告录入模板。
+     * @param orders 预约订单数据
+     * @return 处理结果数值
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -117,7 +139,9 @@ public class CireportServiceImpl extends ServiceImpl<CireportMapper, Cireport> i
     }
 
     /**
-     * 根据体检预约编号查询检查项列表及明细信息。
+     * 查询指定订单的报告检查项目及结果明细。
+     * @param cireport 报告检查项目查询条件
+     * @return 符合条件的数据集合
      */
     @Override
     public List<CiReportDto> listCiReport(Cireport cireport) {

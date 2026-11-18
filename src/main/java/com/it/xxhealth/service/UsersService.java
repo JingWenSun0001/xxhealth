@@ -4,33 +4,33 @@ import com.it.xxhealth.entity.Users;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
-* @author Ljz
-* @description 针对表【users(用户表)】的数据库操作Service
-* @createDate 2026-11-04 09:47:06
-*/
+ * 用户账号业务接口。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 public interface UsersService extends IService<Users> {
 
     /**
-     * 登录校验：手机号 + 密码
-     *
-     * @param users 只用到 userid、password
-     * @return 校验通过返回用户信息，手机号不存在或密码错误返回 null
+     * 根据手机号和密码校验用户登录信息。
+     * @param users 用户账号数据
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     Users getUsersByUserIdByPass(Users users);
 
     /**
-     * 手机号查重
-     *
-     * @param users 只用到 userid
-     * @return 该用户对象；未注册返回 null
+     * 根据手机号查询用户账号。
+     * @param users 用户账号数据
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     Users getUsersById(Users users);
 
     /**
-     * 注册（手机号重复时不写入）
-     *
-     * @param users 待注册用户
-     * @return 1 注册成功；-1 手机号已注册；0 写入失败
+     * 校验并注册用户，同时同步医生端患者档案。
+     * @param users 用户账号数据
+     * @return 处理结果数值
      */
     int saveUsers(Users users);
 

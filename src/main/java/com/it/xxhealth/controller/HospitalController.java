@@ -10,20 +10,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户端 - 医院接口（列表 / 详情）
- * <p>
- * 按文档口径：成功返回裸对象，失败返回 null 或空集合，不再包 Result。
- * 完整路径带 context-path：/tijian/hospital/...
+ * 体检机构接口，提供机构列表和详情查询功能。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @RestController
 @RequestMapping("/hospital")
 public class HospitalController {
 
+    /**
+     * 体检机构业务服务。
+     */
     @Autowired
     private HospitalService hospitalService;
 
     /**
-     * 医院列表：按 state 过滤，state 为 null 查全部
+     * 按营业状态查询体检机构列表。
+     * @param hospital 体检机构查询条件
+     * @return 符合条件的数据集合
      */
     @PostMapping("/listHospital")
     public List<Hospital> listHospital(@RequestBody(required = false) Hospital hospital) {
@@ -32,7 +39,9 @@ public class HospitalController {
     }
 
     /**
-     * 医院详情：不存在返回 null
+     * 根据机构编号查询体检机构详情。
+     * @param hospital 体检机构查询条件
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @PostMapping("/getHospitalById")
     public Hospital getHospitalById(@RequestBody Hospital hospital) {

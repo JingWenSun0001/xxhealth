@@ -26,20 +26,33 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import java.util.List;
 
 /**
- * 体检套餐信息表 Service 实现
+ * 体检套餐业务实现。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @Service
 public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal>
     implements SetmealService {
 
+    /**
+     * 套餐检查项目关联业务服务。
+     */
     @Autowired
     private SetmealdetailedService setmealdetailedService;
 
+    /**
+     * 检查项目业务服务。
+     */
     @Autowired
     private CheckitemService checkitemService;
 
     /**
-     * 按类型查套餐：type 为 null 查全部
+     * 按适用性别查询体检套餐。
+     * @param type type 参数
+     * @return 符合条件的数据集合
      */
     @Override
     public List<Setmeal> listSetmealByType(Integer type) {
@@ -52,7 +65,9 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal>
     }
 
     /**
-     * 套餐详情：套餐 + 套餐内的检查项（按明细录入顺序返回）
+     * 根据套餐编号查询套餐及检查项目详情。
+     * @param smid 体检套餐编号
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @Override
     public SetmealDto getSetmealById(Integer smid) {
@@ -72,6 +87,8 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal>
 
     /**
      * 查询套餐包含的检查项：setmealdetailed -> checkitem
+     * @param smid 体检套餐编号
+     * @return 符合条件的数据集合
      */
     private List<CheckitemDto> listItems(Integer smid) {
         LambdaQueryWrapper<Setmealdetailed> wrapper = new LambdaQueryWrapper<>();
@@ -108,5 +125,9 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal>
         }
         return items;
     }
+ /**
+  * 查询全部体检套餐及其检查项目。
+  * @return 符合条件的数据集合
+  */
  public List<Setmeal> listSetmeal() { return listSetmealByType(null); }
 }

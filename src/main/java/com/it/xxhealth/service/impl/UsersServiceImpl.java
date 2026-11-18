@@ -10,22 +10,34 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
-* @author Ljz
-* @description 针对表【users(用户表)】的数据库操作Service实现
-* @createDate 2026-11-04 09:47:06
-*/
+ * 用户账号业务实现。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
+ */
 @Service
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
     implements UsersService{
 
+    /**
+     * 负责把用户和订单同步到医生工作台的服务。
+     */
     private final MobileDoctorSyncService mobileDoctorSyncService;
 
+    /**
+     * 创建 UsersServiceImpl 实例并注入所需依赖。
+     * @param mobileDoctorSyncService mobileDoctorSyncService 参数
+     */
     public UsersServiceImpl(MobileDoctorSyncService mobileDoctorSyncService) {
         this.mobileDoctorSyncService = mobileDoctorSyncService;
     }
 
     /**
-     * 登录：先按手机号取用户，再比对密码（密码明文存储，与原表设计保持一致）
+     * 根据手机号和密码校验用户登录信息。
+     * @param users 用户账号数据
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @Override
     public Users getUsersByUserIdByPass(Users users) {
@@ -43,7 +55,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
     }
 
     /**
-     * 手机号查重：未注册返回 null
+     * 根据手机号查询用户账号。
+     * @param users 用户账号数据
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     @Override
     public Users getUsersById(Users users) {
@@ -54,7 +68,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
     }
 
     /**
-     * 注册：手机号已存在则不写入
+     * 校验并注册用户，同时同步医生端患者档案。
+     * @param users 用户账号数据
+     * @return 处理结果数值
      */
     @Override
     @Transactional
@@ -74,6 +90,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
 
     /**
      * 按手机号（主键 userId）查询用户
+     * @param userid 用户手机号
+     * @return 查询到的业务数据；不存在时按接口约定返回 null 或空集合
      */
     private Users getByUserid(String userid) {
         LambdaQueryWrapper<Users> wrapper = new LambdaQueryWrapper<>();
@@ -81,6 +99,11 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         return baseMapper.selectOne(wrapper);
     }
 
+    /**
+     * 执行 isBlank 对应的业务处理。
+     * @param text text 参数
+     * @return 条件成立时返回 true，否则返回 false
+     */
     private boolean isBlank(String text) {
         return text == null || text.trim().isEmpty();
     }

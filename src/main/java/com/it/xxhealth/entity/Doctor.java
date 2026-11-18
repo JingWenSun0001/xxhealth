@@ -6,8 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 医生信息表
- * @TableName doctor
+ * 医生账号实体，对应 doctor 表。
+ *
+ * 创建日期：2026-11-16
+ *
+ * @author 熙心健康项目组
+ * @since 2026-11-16
  */
 @TableName(value ="doctor")
 @Data
@@ -43,6 +47,11 @@ public class Doctor {
      */
     private Integer deptno;
 
+    /**
+     * 比较当前对象与目标对象的业务字段是否相等。
+     * @param that 待比较的目标对象
+     * @return 两个对象的业务字段相等时返回 true，否则返回 false
+     */
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -63,6 +72,10 @@ public class Doctor {
             && (this.getDeptno() == null ? other.getDeptno() == null : this.getDeptno().equals(other.getDeptno()));
     }
 
+    /**
+     * 根据业务字段计算对象哈希值。
+     * @return 当前对象的哈希值
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -76,6 +89,10 @@ public class Doctor {
         return result;
     }
 
+    /**
+     * 生成便于日志和调试查看的对象字符串。
+     * @return 包含主要字段的对象描述文本
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
